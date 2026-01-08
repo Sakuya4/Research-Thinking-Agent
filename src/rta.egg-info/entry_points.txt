@@ -1,0 +1,2 @@
+[console_scripts]
+rta = rta.cli:app
