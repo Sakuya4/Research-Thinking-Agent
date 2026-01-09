@@ -51,7 +51,7 @@ Another challenge was finding the right balance between flexibility and structur
 
 ---
 
-## Accomplishments That I'm Proud Of
+## Accomplishments That We Proud Of
 
 - Designing an AI agent that focuses on **research thinking**, not just information retrieval  
 - Creating a reusable, structured reasoning pipeline instead of a single-pass response  
