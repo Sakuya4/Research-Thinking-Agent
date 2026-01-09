@@ -1,5 +1,6 @@
 # Research-Thinking-Agent
 
+<img width="691" height="230" alt="image" src="https://github.com/user-attachments/assets/fd8b2be3-acba-453b-b8a2-49b4379f1557" />
 
 ## Inspiration
 
