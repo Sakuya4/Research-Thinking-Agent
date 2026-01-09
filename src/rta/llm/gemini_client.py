@@ -5,11 +5,13 @@ import time
 from dataclasses import dataclass
 from typing import Any, Dict, Optional, Tuple
 
+from dotenv import load_dotenv
 from google import genai  # google-genai SDK
 from google.genai import types
 
 from ..logger import EventLogger
 
+load_dotenv()
 
 @dataclass
 class GeminiClient:
@@ -21,7 +23,7 @@ class GeminiClient:
     - explicit inputs/outputs
     - structured logging for each request/response
     """
-    
+
     api_key: str = field(repr=False)
     model: str = "gemini-flash-latest"
     @classmethod
