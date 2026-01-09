@@ -26,7 +26,7 @@ Instead of returning a list of papers, the agent focuses on **helping users thin
 
 ---
 
-## How I Built It
+## How We Built It
 
 The system is implemented as a **command-line AI agent** using the Google Gemini API.
 
@@ -41,7 +41,7 @@ This agent-based design keeps the reasoning process transparent, inspectable, an
 
 ---
 
-## Challenges I Ran Into
+## Challenges We Ran Into
 
 One major challenge was preventing the model from skipping reasoning and immediately listing papers or buzzwords.
 
@@ -57,16 +57,6 @@ Another challenge was finding the right balance between flexibility and structur
 - Creating a reusable, structured reasoning pipeline instead of a single-pass response  
 - Successfully using Gemini models to perform multi-stage, research-oriented reasoning  
 - Building a tool that reflects how real researchers actually think and explore ideas  
-
----
-
-## What I Learned
-
-Through this project, I learned:
-- How to design agent-based workflows around large language models  
-- How structured reasoning improves clarity and research productivity  
-- How prompt design directly affects abstraction, decomposition, and long-horizon thinking  
-- How AI can augment human cognition rather than replace it  
 
 ---
 
