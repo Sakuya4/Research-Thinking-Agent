@@ -16,12 +16,13 @@ from .schemas import (
 
 from .stages.query_plan_gemini import stage_query_plan_gemini
 from .stages.retrieval_mock import retrieval_mock
+from .stages.retrieval_live import retrieval_live
 from .stages.topic_structuring_mock import topic_structuring_mock
 
 
 def run_pipeline(cfg: RTAConfig, user_input: InputPayload) -> Tuple[str, Path]:
     """
-    Execute Phase-0 pipeline (mock).
+    Execute pipeline.
 
     Key property:
     - each stage has explicit input/output boundaries
@@ -53,11 +54,16 @@ def run_pipeline(cfg: RTAConfig, user_input: InputPayload) -> Tuple[str, Path]:
 
     # ---- Stage 2 ----
     try:
-        logger.log("stage2", "start", {"queries": len(qp.expanded_queries)})
-        rr: RetrievalResult = retrieval_mock(cfg, qp, logger)
+        logger.log("stage2", "start", {"queries": len(qp.expanded_queries), "mode": cfg.retrieval_mode})
+
+        if cfg.retrieval_mode.lower() == "mock":
+            rr: RetrievalResult = retrieval_mock(cfg, qp, logger)
+        else:
+            rr: RetrievalResult = retrieval_live(cfg, qp, logger)
+
         write_json(run_dir / "retrieval.json", rr.model_dump())
         status.stages.stage2 = "ok"
-        logger.log("stage2", "done", {"papers": len(rr.papers), "dedup_after": rr.dedup_after})
+        logger.log("stage2", "done", {"papers": len(rr.papers), "dedup_after": rr.dedup_after, "warnings": len(rr.warnings)})
     except Exception as e:
         status.stages.stage2 = "fail"
         status.error = {"stage": "stage2", "message": str(e)}
