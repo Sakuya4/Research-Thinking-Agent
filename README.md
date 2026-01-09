@@ -1,7 +1,5 @@
 # Research-Thinking-Agent
 
-first version README.md
-
 
 ## Inspiration
 
@@ -122,3 +120,28 @@ Then type a topic, for example:
   - bio-impedance pulse wave modeling
 
 The system will generate outputs and save them under runs/<run_id>/.
+
+--- 
+## References & Inspirations
+
+This project is inspired by recent research on large language model (LLM) agents, 
+automated research workflows, and agentic systems for scientific reasoning and synthesis.
+
+In particular, the overall system design and long-term vision are influenced by the following works:
+
+- **Liu et al., 2025**  
+  *A Vision for Auto Research with LLM Agents*  
+  arXiv preprint arXiv:2504.18765  
+
+- **Cao et al., 2025**  
+  *Large Language Models for Planning: A Comprehensive and Systematic Survey*  
+  arXiv preprint arXiv:2505.19683  
+
+- **Shittu & Quaye, 2025**  
+  *AI-Assisted Handheld Echocardiography by Nonexpert Operators: A Narrative Review of Prospective Studies*  
+  Cureus, 17(11): e97050. doi:10.7759/cureus.97050  
+
+
+- **Liu et al., 2025**  
+  *Agentic AutoSurvey: Let LLMs Survey LLMs*  
+  arXiv preprint arXiv:2509.18661  
