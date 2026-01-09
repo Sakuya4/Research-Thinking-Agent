@@ -9,26 +9,31 @@ load_dotenv()
 
 # ---- CLI / Pipeline imports ----
 import typer
-from .config import DEFAULT_CONFIG
+from .config import DEFAULT_CONFIG, RTAConfig
 from .schemas import InputPayload
 from .pipeline import run_pipeline
 from .interactive import interactive_loop
+from .shell import RTAShell
+
 
 
 app = typer.Typer(add_completion=False, help="Research Thinking Agent (RTA)")
 
 
 @app.callback(invoke_without_command=True)
-def main(
-    query: str = typer.Argument(None),
-    context: str = typer.Option("", help="Optional context"),
-):
-    """
-    Research Thinking Agent (RTA)
-    """
-    if query is None:
-        interactive_loop()
-        return
+def main() -> None:
+    RTAShell(RTAConfig()).run()
+
+# def main(
+#     query: str = typer.Argument(None),
+#     context: str = typer.Option("", help="Optional context"),
+# ):
+#     """
+#     Research Thinking Agent (RTA)
+#     """
+#     if query is None:
+#         interactive_loop()
+#         return
 
     user_input = InputPayload(query=query, context=context or None)
     run_id, run_dir = run_pipeline(DEFAULT_CONFIG, user_input)
@@ -37,4 +42,4 @@ def main(
 
 
 if __name__ == "__main__":
-    app()
+    main()
