@@ -6,6 +6,7 @@ from typing import Tuple
 from .config import RTAConfig
 from .logger import EventLogger
 from .run_manager import new_run_dir, write_json, init_status, update_status, write_report_md
+
 from .schemas import (
     InputPayload,
     QueryPlan,
@@ -18,16 +19,20 @@ from .stages.query_plan_gemini import stage_query_plan_gemini
 from .stages.retrieval_mock import retrieval_mock
 from .stages.retrieval_live import retrieval_live
 from .stages.topic_structuring_mock import topic_structuring_mock
+from .stages.reasoning_agent import run_reasoning_agent
+
+from .validators.reasoning_validator import validate_reasoning
 
 
 def run_pipeline(cfg: RTAConfig, user_input: InputPayload) -> Tuple[str, Path]:
     """
-    Execute pipeline.
+    Execute pipeline with run artifacts persisted.
 
-    Key property:
-    - each stage has explicit input/output boundaries
-    - each stage emits structured logs for failure isolation
-    - run artifacts are persisted for replay/debugging
+    Stages:
+      1) query plan (LLM)
+      2) retrieval (mock/live)
+      3) topic structuring (mock for now)
+      4) reasoning agent (LLM + validator)
     """
     run_dir = new_run_dir(cfg, user_input.query)
     logger = EventLogger(log_path=run_dir / "logs.jsonl")
@@ -63,7 +68,11 @@ def run_pipeline(cfg: RTAConfig, user_input: InputPayload) -> Tuple[str, Path]:
 
         write_json(run_dir / "retrieval.json", rr.model_dump())
         status.stages.stage2 = "ok"
-        logger.log("stage2", "done", {"papers": len(rr.papers), "dedup_after": rr.dedup_after, "warnings": len(rr.warnings)})
+        logger.log("stage2", "done", {
+            "papers": len(rr.papers),
+            "dedup_after": rr.dedup_after,
+            "warnings": len(rr.warnings),
+        })
     except Exception as e:
         status.stages.stage2 = "fail"
         status.error = {"stage": "stage2", "message": str(e)}
@@ -89,6 +98,39 @@ def run_pipeline(cfg: RTAConfig, user_input: InputPayload) -> Tuple[str, Path]:
 
     update_status(run_dir, status)
 
+    # ---- Stage 4 ----
+    try:
+        logger.log("stage4", "start", {"papers": len(rr.papers)})
+
+        reasoning = run_reasoning_agent(
+            query=user_input.query,
+            papers=rr.papers,
+            logger=logger,
+            prompt_dir=Path("src/rta/prompts"),
+        )
+
+        # validator expects that claims/gaps cite valid paper_id
+        paper_ids = {cp.paper_id for c in reasoning.clusters for cp in c.papers}
+        validate_reasoning(reasoning, paper_ids)
+
+        write_json(run_dir / "reasoning.json", reasoning.model_dump())
+        status.stages.stage4 = "ok"
+
+        logger.log("stage4", "done", {
+            "clusters": len(reasoning.clusters),
+            "claims": len(reasoning.claims),
+            "gaps": len(reasoning.research_gaps),
+        })
+
+    except Exception as e:
+        status.stages.stage4 = "fail"
+        status.error = {"stage": "stage4", "message": str(e)}
+        logger.log("stage4", "fail", {"error": str(e)})
+        update_status(run_dir, status)
+        raise
+
+    update_status(run_dir, status)
+
     # ---- Final packaging ----
     final = FinalOutput(
         query=user_input.query,
@@ -96,6 +138,7 @@ def run_pipeline(cfg: RTAConfig, user_input: InputPayload) -> Tuple[str, Path]:
         recommended_pipeline=tsr.recommended_pipeline,
         clusters=tsr.clusters,
         top_papers=rr.papers[: min(10, len(rr.papers))],
+        reasoning=reasoning,
     )
     write_json(run_dir / "final_output.json", final.model_dump())
 
@@ -107,19 +150,18 @@ def run_pipeline(cfg: RTAConfig, user_input: InputPayload) -> Tuple[str, Path]:
 
 
 def _render_report_md(final: FinalOutput) -> str:
-    """
-    Human-readable report (Markdown).
-    Keep concise; UI can render this directly.
-    """
     lines = []
-    lines.append(f"# Research Thinking Report\n")
+    lines.append("# Research Thinking Report\n")
     lines.append(f"**Query**: {final.query}\n")
+
     lines.append("## Main Directions\n")
     for d in final.main_directions:
         lines.append(f"- {d}")
+
     lines.append("\n## Recommended Pipeline\n")
     for i, step in enumerate(final.recommended_pipeline, 1):
         lines.append(f"{i}. {step}")
+
     lines.append("\n## Topic Clusters\n")
     for c in final.clusters:
         lines.append(f"### [{c.cluster_id}] {c.name}")
@@ -129,8 +171,17 @@ def _render_report_md(final: FinalOutput) -> str:
         if c.typical_methods:
             lines.append(f"- Methods: {', '.join(c.typical_methods)}")
         lines.append("")
+
     lines.append("## Top Papers (Preview)\n")
     for p in final.top_papers:
         lines.append(f"- **{p.title}** ({p.year or 'n/a'}) — {p.source}")
+
+    # Reasoning summary (if any field exists)
+    if getattr(final, "reasoning", None) is not None:
+        lines.append("\n## Reasoning Agent Output\n")
+        lines.append(f"- Clusters: {len(final.reasoning.clusters)}")
+        lines.append(f"- Claims: {len(final.reasoning.claims)}")
+        lines.append(f"- Research gaps: {len(final.reasoning.research_gaps)}")
+
     lines.append("")
     return "\n".join(lines)

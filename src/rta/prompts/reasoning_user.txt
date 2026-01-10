@@ -1,0 +1,13 @@
+Topic: {{query}}
+
+Papers (JSON):
+{{papers_json}}
+
+Task:
+Produce:
+1) topic clusters
+2) key claims (each claim must cite paper_ids)
+3) research gaps
+4) suggested future directions
+
+Output ONLY valid JSON that matches the ReasoningResult schema.

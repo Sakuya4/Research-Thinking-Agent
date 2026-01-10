@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel, Field
-
+from .schemas.reasoning import ReasoningResult, ReasoningClaim
 
 class InputPayload(BaseModel):
     """
@@ -67,15 +67,15 @@ class TopicStructuringResult(BaseModel):
     main_directions: List[str] = Field(default_factory=list)
 
 
+
 class FinalOutput(BaseModel):
-    """
-    Final packaged output (what you show to users / UI / AI Studio).
-    """
     query: str
     main_directions: List[str]
     recommended_pipeline: List[str]
-    clusters: List[Cluster]
-    top_papers: List[PaperItem] = Field(default_factory=list)
+    clusters: List[TopicCluster]
+    top_papers: List[PaperItem]
+
+    reasoning: Optional[ReasoningResult] = None
 
 
 class StageStatus(BaseModel):
