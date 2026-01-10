@@ -27,6 +27,14 @@ use_arxiv = sources in ("both", "arxiv")
 # Helpers
 # -------------------------
 
+def _paper_id(source: str, title: str, url: str) -> str:
+    """
+    Stable paper id: deterministic across runs.
+    Prefer URL if present, fallback to title.
+    """
+    base = f"{(source or '').strip().lower()}|{(url or '').strip()}|{(title or '').strip().lower()}"
+    return hashlib.sha1(base.encode("utf-8")).hexdigest()[:12]
+
 def _norm_title(t: str) -> str:
     t = t.strip().lower()
     t = re.sub(r"\s+", " ", t)
@@ -144,6 +152,7 @@ def _search_semantic_scholar(cfg: RTAConfig, query: str, limit: int = 20) -> Lis
 
         out.append(
             PaperItem(
+                paper_id=_paper_id("SemanticScholar", title, (it.get("url") or "").strip()),
                 title=title,
                 authors=authors,
                 year=_safe_int(it.get("year")),
@@ -219,6 +228,7 @@ def _search_arxiv(cfg: RTAConfig, query: str, max_results: int = 20) -> List[Pap
 
         out.append(
             PaperItem(
+                paper_id=_paper_id("arXiv", title, url_link),
                 title=title,
                 authors=authors,
                 year=year,

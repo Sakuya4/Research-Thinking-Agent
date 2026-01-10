@@ -34,14 +34,34 @@ def _print(style: Style, tag: str, msg: str) -> None:
     safe = html.escape(msg)
     print_formatted_text(HTML(f"<{tag}>{safe}</{tag}>"), style=style)
 
+
 def _print_kv(style: Style, key: str, value: str) -> None:
     import html as _html
     k = _html.escape(key)
     v = _html.escape(value)
     print_formatted_text(HTML(f"<dim>{k}</dim> {v}"), style=style)
 
+
 def _hr(style: Style) -> None:
-    print_formatted_text(HTML("<dim>────────────────────────────────────────────────────────────</dim>"), style=style)
+    print_formatted_text(
+        HTML("<dim>────────────────────────────────────────────────────────────</dim>"),
+        style=style,
+    )
+
+
+def _has_gemini_key() -> bool:
+    return bool(os.getenv("GEMINI_API_KEY", "").strip())
+
+
+def _find_latest_run_dir(runs_dir: str) -> Optional[Path]:
+    p = Path(runs_dir)
+    if not p.exists():
+        return None
+    dirs = [d for d in p.iterdir() if d.is_dir()]
+    if not dirs:
+        return None
+    dirs.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+    return dirs[0]
 
 
 class RTAShell:
@@ -88,6 +108,7 @@ class RTAShell:
                 "retrieval",
                 "status",
                 "report",
+                "reasoning",
             ],
             ignore_case=True,
         )
@@ -98,13 +119,17 @@ class RTAShell:
             completer=self._completer,
         )
 
-    # ----------------------
-    # Main loop
-    # ----------------------
+        self._warned_missing_key = False
+
     def run(self) -> None:
-        print_formatted_text(HTML(f"<banner>{RTA_BANNER}</banner>"), style=self.style)
+        print_formatted_text(HTML(f"\n<banner>{RTA_BANNER}</banner>"), style=self.style)
         _print(self.style, "title", "Research Thinking Agent")
         _print(self.style, "hint", "Type /help for commands. Use /run <topic> to start.\n")
+
+        if not _has_gemini_key():
+            self._warned_missing_key = True
+            _print(self.style, "warn", "[WARN] GEMINI_API_KEY not set. Live LLM steps may be unavailable.")
+            _print(self.style, "hint", "       Create a .env file (recommended) or set $env:GEMINI_API_KEY='...'\n")
 
         while True:
             try:
@@ -114,17 +139,15 @@ class RTAShell:
                 return
 
             if not line:
-                _print(self.style, "dim", "Tip: /run <topic>  |  /set sources arxiv  |  /open report  |  /help")
+                _print(self.style, "dim", "Tip: /run <topic>  |  /set retrieval_mode mock  |  /open report  |  /help")
                 continue
 
-            # Slash commands
             if line.startswith("/"):
                 should_exit = self._handle_command(line)
                 if should_exit:
                     return
                 continue
 
-            # Plain text => run
             self._cmd_run(line)
 
     def _handle_command(self, line: str) -> bool:
@@ -166,18 +189,16 @@ class RTAShell:
         _print(self.style, "err", f"[ERR] Unknown command: /{cmd}. Try /help")
         return False
 
-    # ----------------------
-    # Commands
-    # ----------------------
     def _cmd_help(self) -> None:
         _hr(self.style)
         _print(self.style, "title", "Commands")
         _print_kv(self.style, "/run <topic>", "Run once (plain text also works)")
         _print_kv(self.style, "/set <key> <value>", "Set config for this session")
         _print_kv(self.style, "  keys", "max_papers, min_year, max_year, retrieval_mode, sources")
+        _print_kv(self.style, "  retrieval_mode", "mock | live")
         _print_kv(self.style, "  sources", "both | arxiv | s2")
-        _print_kv(self.style, "/show <what>", "Print JSON (trimmed): config|plan|retrieval|status")
-        _print_kv(self.style, "/open <what>", "View file in CLI pager: report|plan|retrieval|status")
+        _print_kv(self.style, "/show <what>", "Print JSON (trimmed): config|plan|retrieval|status|reasoning")
+        _print_kv(self.style, "/open <what>", "View file in CLI pager: report|plan|retrieval|status|reasoning")
         _print_kv(self.style, "/last", "Show last run directory")
         _print_kv(self.style, "/exit", "Quit")
         _hr(self.style)
@@ -203,8 +224,11 @@ class RTAShell:
                 return
 
             if key == "retrieval_mode":
-                setattr(self.cfg, key, value)
-                _print(self.style, "ok", f"[OK] Set {key} = {value}")
+                v = value.lower()
+                if v not in ("mock", "live"):
+                    raise ValueError("retrieval_mode must be: mock|live")
+                setattr(self.cfg, key, v)
+                _print(self.style, "ok", f"[OK] Set {key} = {v}")
                 return
 
             if key == "sources":
@@ -222,7 +246,7 @@ class RTAShell:
 
     def _cmd_show(self, args) -> None:
         if not args:
-            _print(self.style, "err", "[ERR] Usage: /show config|plan|retrieval|status")
+            _print(self.style, "err", "[ERR] Usage: /show config|plan|retrieval|status|reasoning")
             return
 
         what = args[0].lower()
@@ -241,10 +265,11 @@ class RTAShell:
             "plan": "query_plan.json",
             "retrieval": "retrieval.json",
             "status": "status.json",
+            "reasoning": "reasoning.json",
         }
         fname = mapping.get(what)
         if not fname:
-            _print(self.style, "err", "[ERR] Usage: /show config|plan|retrieval|status")
+            _print(self.style, "err", "[ERR] Usage: /show config|plan|retrieval|status|reasoning")
             return
 
         p = self.last_run_dir / fname
@@ -259,7 +284,7 @@ class RTAShell:
 
     def _cmd_open(self, args) -> None:
         if not args:
-            _print(self.style, "err", "[ERR] Usage: /open report|plan|retrieval|status")
+            _print(self.style, "err", "[ERR] Usage: /open report|plan|retrieval|status|reasoning")
             return
 
         what = args[0].lower()
@@ -273,10 +298,11 @@ class RTAShell:
             "plan": "query_plan.json",
             "retrieval": "retrieval.json",
             "status": "status.json",
+            "reasoning": "reasoning.json",
         }
         fname = mapping.get(what)
         if not fname:
-            _print(self.style, "err", "[ERR] Usage: /open report|plan|retrieval|status")
+            _print(self.style, "err", "[ERR] Usage: /open report|plan|retrieval|status|reasoning")
             return
 
         p = self.last_run_dir / fname
@@ -297,12 +323,21 @@ class RTAShell:
 
         try:
             _, run_dir = run_pipeline(self.cfg, InputPayload(query=topic, context=""))
-        except Exception as e:
-            _print(self.style, "err", f"[ERR] {e}")
-            _print(self.style, "hint", "Tip: set GEMINI_API_KEY in .env or PowerShell: $env:GEMINI_API_KEY='...'\n")
+            self.last_run_dir = Path(run_dir)
+            _print(self.style, "ok", f"[OK] Saved outputs: {run_dir}")
+            _print(self.style, "dim", "Try: /show retrieval  |  /show status  |  /open report  |  /last")
+            _hr(self.style)
             return
-        self.last_run_dir = Path(run_dir)
 
-        _print(self.style, "ok", f"[OK] Saved outputs: {run_dir}")
-        _print(self.style, "dim", "Try: /show retrieval  |  /open report  |  /last")
-        _hr(self.style)
+        except Exception as e:
+            # Even on failure, try to set last_run_dir to the latest created run
+            latest = _find_latest_run_dir(self.cfg.runs_dir)
+            if latest is not None:
+                self.last_run_dir = latest
+
+            _print(self.style, "err", f"[ERR] {e}")
+            if "GEMINI_API_KEY" in str(e):
+                _print(self.style, "hint", "Tip: create a .env file with GEMINI_API_KEY=... (recommended)\n")
+            else:
+                _print(self.style, "hint", "Tip: use /last then /open status to inspect failure.\n")
+            return
