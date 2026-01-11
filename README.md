@@ -1,5 +1,7 @@
 # Research-Thinking-Agent
 
+[![License](https://img.shields.io/github/license/Sakuya4/Research-Thinking-Agent)](https://github.com/Sakuya4/Research-Thinking-Agent/blob/6512cd55afdce891a4e553e77f8fe6d2684da0bc/LICENSE)
+
 <img width="691" height="230" alt="image" src="https://github.com/user-attachments/assets/fd8b2be3-acba-453b-b8a2-49b4379f1557" />
 
 ## Inspiration
