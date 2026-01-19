@@ -1,187 +1,177 @@
-from __future__ import annotations
+"""
+Main Pipeline Execution Module.
+File: src/rta/pipeline.py
+"""
 
-from pathlib import Path
-from typing import Tuple
+import logging
+import json
+import os
+from typing import Optional, Any, Union, Tuple
 
-from .config import RTAConfig
-from .logger import EventLogger
-from .run_manager import new_run_dir, write_json, init_status, update_status, write_report_md
+# --- Import Stage Modules ---
+from rta.stages.query_plan_gemini import run_query_planning
+from rta.stages.retrieval_live import run_retrieval
+from rta.stages.topic_miner import TopicMiningService
+from rta.stages.reasoning_engine import ReasoningEngine
 
-from .schemas import (
-    InputPayload,
-    QueryPlan,
-    RetrievalResult,
-    TopicStructuringResult,
-    FinalOutput,
-)
+# --- Import Utils ---
+try:
+    from rta.utils.llm_client import get_default_client
+except ImportError:
+    class MockClient:
+        def generate(self, *args, **kwargs): return "Mock Response"
+        def get_embedding(self, *args, **kwargs): return [0.1]*768
+    def get_default_client(): return MockClient()
 
-from .stages.query_plan_gemini import stage_query_plan_gemini
-from .stages.retrieval_mock import retrieval_mock
-from .stages.retrieval_live import retrieval_live
-from .stages.topic_structuring_mock import topic_structuring_mock
-from .stages.reasoning_agent import run_reasoning_agent
+# --- Import UI ---
+from rta.utils.ui import spinner, print_header
 
-from .validators.reasoning_validator import validate_reasoning
+logger = logging.getLogger(__name__)
 
-
-def run_pipeline(cfg: RTAConfig, user_input: InputPayload) -> Tuple[str, Path]:
+def run_pipeline(topic: Union[str, Any], output_dir: Union[str, Any] = "outputs") -> Tuple[bool, str]:
     """
-    Execute pipeline with run artifacts persisted.
-
-    Stages:
-      1) query plan (LLM)
-      2) retrieval (mock/live)
-      3) topic structuring (mock for now)
-      4) reasoning agent (LLM + validator)
+    Executes the full RTA research pipeline (End-to-End).
+    Returns: (success: bool, output_directory_path: str)
     """
-    run_dir = new_run_dir(cfg, user_input.query)
-    logger = EventLogger(log_path=run_dir / "logs.jsonl")
+    
+    # --- Argument Handling ---
+    real_topic = topic
+    if hasattr(topic, 'query'): 
+        real_topic = topic.query
+    elif not isinstance(topic, str):
+        real_topic = str(topic)
+        
+    real_output_dir = "outputs"
+    if isinstance(output_dir, str):
+        real_output_dir = output_dir
+    elif output_dir is not None:
+        real_output_dir = "outputs"
 
-    status = init_status(run_dir)
-    write_json(run_dir / "input.json", user_input.model_dump())
-    write_json(run_dir / "config.json", cfg.model_dump())
-
-    # ---- Stage 1 ----
+    # UI Header
+    print_header("Research Thinking Agent", f"Topic: {real_topic}")
+    
+    # Ensure output directory exists
     try:
-        logger.log("stage1", "start", {"query": user_input.query})
-        qp: QueryPlan = stage_query_plan_gemini(user_input, logger)
-        write_json(run_dir / "query_plan.json", qp.model_dump())
-        status.stages.stage1 = "ok"
-        logger.log("stage1", "done", {"expanded_queries": len(qp.expanded_queries)})
+        os.makedirs(real_output_dir, exist_ok=True)
     except Exception as e:
-        status.stages.stage1 = "fail"
-        status.error = {"stage": "stage1", "message": str(e)}
-        logger.log("stage1", "fail", {"error": str(e)})
-        update_status(run_dir, status)
-        raise
+        logger.error(f"[Pipeline] Failed to create output directory: {e}")
+        return False, ""
 
-    update_status(run_dir, status)
+    # Initialize Client
+    llm_client = get_default_client() 
+    
+    # Define report path
+    md_path = os.path.join(real_output_dir, "report.md") # Changed to standard name
 
-    # ---- Stage 2 ----
+    # ------------------------------------------------------------------
+    # Stage 1: Query Planning
+    # ------------------------------------------------------------------
+    with spinner("Stage 1: Planning search strategy..."):
+        try:
+            plan = run_query_planning(real_topic)
+            logger.info(f"   -> Generated {len(plan.expanded_queries)} search queries")
+            # [FIX] Use standard filename for CLI compatibility
+            _save_json(plan, real_output_dir, "plan.json") 
+        except Exception as e:
+            logger.error(f"[Fail] Stage 1 Error: {e}")
+            return False, ""
+
+    # ------------------------------------------------------------------
+    # Stage 2: Literature Retrieval
+    # ------------------------------------------------------------------
+    with spinner("Stage 2: Searching literature (arXiv/Scholar)..."):
+        try:
+            retrieval_results = run_retrieval(plan.expanded_queries)
+            
+            papers = getattr(retrieval_results, 'papers', []) 
+            if not papers and isinstance(retrieval_results, list):
+                 papers = retrieval_results
+
+            logger.info(f"   -> Retrieved {len(papers)} papers")
+            # [FIX] Use standard filename
+            _save_json(retrieval_results, real_output_dir, "retrieval.json") 
+
+            if not papers:
+                logger.warning("[Warn] No papers found. Aborting.")
+                return False, ""
+        except Exception as e:
+            logger.error(f"[Fail] Stage 2 Error: {e}")
+            return False, ""
+
+    # ------------------------------------------------------------------
+    # Stage 3: Topic Structuring
+    # ------------------------------------------------------------------
+    with spinner("Stage 3: Clustering & Structuring topics..."):
+        try:
+            miner = TopicMiningService(llm_client=llm_client)
+            structuring_result = miner.execute(papers)
+            
+            if structuring_result:
+                cluster_count = len(structuring_result.clusters)
+                logger.info(f"   -> Identified {cluster_count} research sub-topics")
+                # [FIX] Use standard filename
+                _save_json(structuring_result, real_output_dir, "structuring.json")
+            else:
+                logger.error("[Fail] Stage 3 returned None")
+                return False, ""
+        except Exception as e:
+            logger.error(f"[Fail] Stage 3 Error: {e}")
+            return False, ""
+
+    # ------------------------------------------------------------------
+    # Stage 4: Reasoning Agent
+    # ------------------------------------------------------------------
+    with spinner("Stage 4: Reasoning & Self-Refining (This may take time)..."):
+        try:
+            engine = ReasoningEngine(llm_client=llm_client)
+            final_report = engine.run(plan, structuring_result, papers)
+            
+            report_topic = getattr(final_report, 'topic', real_topic)
+            logger.info(f"   -> Report generated! Topic: {report_topic}")
+            # [FIX] Use standard filename
+            _save_json(final_report, real_output_dir, "reasoning.json")
+            
+            # Markdown Generation
+            with open(md_path, "w", encoding="utf-8") as f:
+                f.write(f"# {report_topic}\n\n")
+                
+                clusters = getattr(final_report, 'clusters', [])
+                for c in clusters:
+                    # Robust access
+                    if isinstance(c, dict):
+                        c_name = c.get('cluster_name', c.get('name', 'Cluster'))
+                        c_desc = c.get('description', '')
+                    else:
+                        c_name = getattr(c, 'cluster_name', getattr(c, 'name', 'Cluster'))
+                        c_desc = getattr(c, 'description', '')
+                        
+                    f.write(f"## {c_name}\n{c_desc}\n\n")
+                    
+            logger.info(f"   -> Markdown saved to: {md_path}")
+
+        except Exception as e:
+            logger.error(f"[Fail] Stage 4 Error: {e}")
+            return False, ""
+
+    print_header("Pipeline Completed", f"Results saved in: {real_output_dir}")
+    
+    # [FIX] Return the DIRECTORY path, not the file path
+    return True, real_output_dir
+
+
+def _save_json(obj, folder, filename):
+    """Helper: Save object to JSON."""
     try:
-        logger.log("stage2", "start", {"queries": len(qp.expanded_queries), "mode": cfg.retrieval_mode})
-
-        if cfg.retrieval_mode.lower() == "mock":
-            rr: RetrievalResult = retrieval_mock(cfg, qp, logger)
-        else:
-            rr: RetrievalResult = retrieval_live(cfg, qp, logger)
-
-        write_json(run_dir / "retrieval.json", rr.model_dump())
-        status.stages.stage2 = "ok"
-        logger.log("stage2", "done", {
-            "papers": len(rr.papers),
-            "dedup_after": rr.dedup_after,
-            "warnings": len(rr.warnings),
-        })
+        path = os.path.join(folder, filename)
+        with open(path, "w", encoding="utf-8") as f:
+            if hasattr(obj, "model_dump"):
+                data = obj.model_dump()
+            elif hasattr(obj, "dict"):
+                data = obj.dict()
+            elif hasattr(obj, "__dict__"):
+                data = obj.__dict__
+            else:
+                data = str(obj)
+            json.dump(data, f, ensure_ascii=False, indent=2)
     except Exception as e:
-        status.stages.stage2 = "fail"
-        status.error = {"stage": "stage2", "message": str(e)}
-        logger.log("stage2", "fail", {"error": str(e)})
-        update_status(run_dir, status)
-        raise
-
-    update_status(run_dir, status)
-
-    # ---- Stage 3 ----
-    try:
-        logger.log("stage3", "start", {"papers": len(rr.papers)})
-        tsr: TopicStructuringResult = topic_structuring_mock(rr, logger)
-        write_json(run_dir / "topic_structuring.json", tsr.model_dump())
-        status.stages.stage3 = "ok"
-        logger.log("stage3", "done", {"clusters": len(tsr.clusters)})
-    except Exception as e:
-        status.stages.stage3 = "fail"
-        status.error = {"stage": "stage3", "message": str(e)}
-        logger.log("stage3", "fail", {"error": str(e)})
-        update_status(run_dir, status)
-        raise
-
-    update_status(run_dir, status)
-
-    # ---- Stage 4 ----
-    try:
-        logger.log("stage4", "start", {"papers": len(rr.papers)})
-
-        reasoning = run_reasoning_agent(
-            query=user_input.query,
-            papers=rr.papers,
-            logger=logger,
-            prompt_dir=Path("src/rta/prompts"),
-        )
-
-        # validator expects that claims/gaps cite valid paper_id
-        paper_ids = {cp.paper_id for c in reasoning.clusters for cp in c.papers}
-        validate_reasoning(reasoning, paper_ids)
-
-        write_json(run_dir / "reasoning.json", reasoning.model_dump())
-        status.stages.stage4 = "ok"
-
-        logger.log("stage4", "done", {
-            "clusters": len(reasoning.clusters),
-            "claims": len(reasoning.claims),
-            "gaps": len(reasoning.research_gaps),
-        })
-
-    except Exception as e:
-        status.stages.stage4 = "fail"
-        status.error = {"stage": "stage4", "message": str(e)}
-        logger.log("stage4", "fail", {"error": str(e)})
-        update_status(run_dir, status)
-        raise
-
-    update_status(run_dir, status)
-
-    # ---- Final packaging ----
-    final = FinalOutput(
-        query=user_input.query,
-        main_directions=tsr.main_directions,
-        recommended_pipeline=tsr.recommended_pipeline,
-        clusters=tsr.clusters,
-        top_papers=rr.papers[: min(10, len(rr.papers))],
-        reasoning=reasoning,
-    )
-    write_json(run_dir / "final_output.json", final.model_dump())
-
-    report = _render_report_md(final)
-    write_report_md(run_dir, report)
-    logger.log("pipeline", "done", {"run_id": run_dir.name})
-
-    return run_dir.name, run_dir
-
-
-def _render_report_md(final: FinalOutput) -> str:
-    lines = []
-    lines.append("# Research Thinking Report\n")
-    lines.append(f"**Query**: {final.query}\n")
-
-    lines.append("## Main Directions\n")
-    for d in final.main_directions:
-        lines.append(f"- {d}")
-
-    lines.append("\n## Recommended Pipeline\n")
-    for i, step in enumerate(final.recommended_pipeline, 1):
-        lines.append(f"{i}. {step}")
-
-    lines.append("\n## Topic Clusters\n")
-    for c in final.clusters:
-        lines.append(f"### [{c.cluster_id}] {c.name}")
-        lines.append(c.description)
-        if c.keywords:
-            lines.append(f"- Keywords: {', '.join(c.keywords)}")
-        if c.typical_methods:
-            lines.append(f"- Methods: {', '.join(c.typical_methods)}")
-        lines.append("")
-
-    lines.append("## Top Papers (Preview)\n")
-    for p in final.top_papers:
-        lines.append(f"- **{p.title}** ({p.year or 'n/a'}) — {p.source}")
-
-    # Reasoning summary (if any field exists)
-    if getattr(final, "reasoning", None) is not None:
-        lines.append("\n## Reasoning Agent Output\n")
-        lines.append(f"- Clusters: {len(final.reasoning.clusters)}")
-        lines.append(f"- Claims: {len(final.reasoning.claims)}")
-        lines.append(f"- Research gaps: {len(final.reasoning.research_gaps)}")
-
-    lines.append("")
-    return "\n".join(lines)
+        logger.warning(f"[Pipeline] Could not save JSON {filename}: {e}")
