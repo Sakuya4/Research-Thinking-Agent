@@ -1,0 +1,74 @@
+{
+  "main_directions": [
+    "Mocked Cluster",
+    "Mocked Cluster",
+    "Mocked Cluster",
+    "Mocked Cluster",
+    "Mocked Cluster"
+  ],
+  "recommended_pipeline": [
+    "Standard Analysis"
+  ],
+  "clusters": [
+    {
+      "cluster_id": "cluster_0",
+      "name": "Mocked Cluster",
+      "description": "Group focused on Mocked Cluster",
+      "keywords": [
+        "AI",
+        "Research"
+      ],
+      "typical_methods": [
+        "Method Analysis"
+      ]
+    },
+    {
+      "cluster_id": "cluster_1",
+      "name": "Mocked Cluster",
+      "description": "Group focused on Mocked Cluster",
+      "keywords": [
+        "AI",
+        "Research"
+      ],
+      "typical_methods": [
+        "Method Analysis"
+      ]
+    },
+    {
+      "cluster_id": "cluster_2",
+      "name": "Mocked Cluster",
+      "description": "Group focused on Mocked Cluster",
+      "keywords": [
+        "AI",
+        "Research"
+      ],
+      "typical_methods": [
+        "Method Analysis"
+      ]
+    },
+    {
+      "cluster_id": "cluster_3",
+      "name": "Mocked Cluster",
+      "description": "Group focused on Mocked Cluster",
+      "keywords": [
+        "AI",
+        "Research"
+      ],
+      "typical_methods": [
+        "Method Analysis"
+      ]
+    },
+    {
+      "cluster_id": "cluster_4",
+      "name": "Mocked Cluster",
+      "description": "Group focused on Mocked Cluster",
+      "keywords": [
+        "AI",
+        "Research"
+      ],
+      "typical_methods": [
+        "Method Analysis"
+      ]
+    }
+  ]
+}

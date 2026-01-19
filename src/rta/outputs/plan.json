@@ -1,0 +1,36 @@
+{
+  "expanded_queries": [
+    "Configurable literature retrieval systems using LLMs",
+    "Automated academic paper scoping tools configuration",
+    "Live vs cache retrieval modes for research APIs",
+    "Reproducible research workflow configuration parameters",
+    "Best practices for caching in literature review pipelines",
+    "Time-bound scholarly data retrieval 2020-2026",
+    "Frameworks using 'runs' directory for research experiments",
+    "Managing max_papers limits in academic search scripts",
+    "LLM raw output debugging storage methods",
+    "Open-source research retrieval frameworks configuration",
+    "Parameter tuning for RAG literature review agents",
+    "Configuration schema for automated scientific review"
+  ],
+  "must_include": [
+    "Literature search",
+    "Retrieval-Augmented Generation (RAG)",
+    "Caching strategy",
+    "Automated review"
+  ],
+  "exclude": [
+    "Database management systems",
+    "Hardware optimization",
+    "General file system performance"
+  ],
+  "target_subtasks": [
+    "Identify specific tools utilizing a configuration structure similar to the topic query.",
+    "Analyze the effectiveness metrics comparing 'live' and 'cached' retrieval modes.",
+    "Examine best practices for setting cache time-to-live (TTL) for academic APIs.",
+    "Review methods for ensuring reproducibility via strict parameter setting (year, limits).",
+    "Investigate logging mechanisms for raw LLM interactions in research workflows.",
+    "Study storage schemas for experimental runs in automated research agents."
+  ],
+  "notes": "The search scope focuses on configurable tooling and frameworks for automated literature retrieval, emphasizing parameters related to scope, caching, and debugging LLM processes."
+}

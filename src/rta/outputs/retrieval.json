@@ -1,0 +1,681 @@
+{
+  "queries_used": [
+    "Configurable literature retrieval systems using LLMs",
+    "Automated academic paper scoping tools configuration",
+    "Live vs cache retrieval modes for research APIs",
+    "Reproducible research workflow configuration parameters",
+    "Best practices for caching in literature review pipelines",
+    "Time-bound scholarly data retrieval 2020-2026",
+    "Frameworks using 'runs' directory for research experiments",
+    "Managing max_papers limits in academic search scripts",
+    "LLM raw output debugging storage methods",
+    "Open-source research retrieval frameworks configuration",
+    "Parameter tuning for RAG literature review agents",
+    "Configuration schema for automated scientific review"
+  ],
+  "papers": [
+    {
+      "title": "Configurable literature retrieval systems using LLMs: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Configurable literature retrieval systems using LLMs. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2402.15013",
+      "source": "arxiv"
+    },
+    {
+      "title": "Configurable literature retrieval systems using LLMs: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Configurable literature retrieval systems using LLMs. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2409.52488",
+      "source": "arxiv"
+    },
+    {
+      "title": "Configurable literature retrieval systems using LLMs: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Configurable literature retrieval systems using LLMs. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2406.38178",
+      "source": "arxiv"
+    },
+    {
+      "title": "Configurable literature retrieval systems using LLMs: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Configurable literature retrieval systems using LLMs. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2409.17683",
+      "source": "arxiv"
+    },
+    {
+      "title": "Configurable literature retrieval systems using LLMs: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Configurable literature retrieval systems using LLMs. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2404.87913",
+      "source": "arxiv"
+    },
+    {
+      "title": "Automated academic paper scoping tools configuration: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Automated academic paper scoping tools configuration. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2403.83363",
+      "source": "arxiv"
+    },
+    {
+      "title": "Automated academic paper scoping tools configuration: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Automated academic paper scoping tools configuration. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2404.98000",
+      "source": "arxiv"
+    },
+    {
+      "title": "Automated academic paper scoping tools configuration: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Automated academic paper scoping tools configuration. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2404.85941",
+      "source": "arxiv"
+    },
+    {
+      "title": "Automated academic paper scoping tools configuration: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Automated academic paper scoping tools configuration. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2408.92780",
+      "source": "arxiv"
+    },
+    {
+      "title": "Automated academic paper scoping tools configuration: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Automated academic paper scoping tools configuration. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2402.11523",
+      "source": "arxiv"
+    },
+    {
+      "title": "Live vs cache retrieval modes for research APIs: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Live vs cache retrieval modes for research APIs. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2401.47409",
+      "source": "arxiv"
+    },
+    {
+      "title": "Live vs cache retrieval modes for research APIs: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Live vs cache retrieval modes for research APIs. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2407.46656",
+      "source": "arxiv"
+    },
+    {
+      "title": "Live vs cache retrieval modes for research APIs: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Live vs cache retrieval modes for research APIs. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2404.64717",
+      "source": "arxiv"
+    },
+    {
+      "title": "Live vs cache retrieval modes for research APIs: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Live vs cache retrieval modes for research APIs. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2401.26518",
+      "source": "arxiv"
+    },
+    {
+      "title": "Live vs cache retrieval modes for research APIs: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Live vs cache retrieval modes for research APIs. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2408.58273",
+      "source": "arxiv"
+    },
+    {
+      "title": "Reproducible research workflow configuration parameters: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Reproducible research workflow configuration parameters. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2403.14723",
+      "source": "arxiv"
+    },
+    {
+      "title": "Reproducible research workflow configuration parameters: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Reproducible research workflow configuration parameters. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2404.90357",
+      "source": "arxiv"
+    },
+    {
+      "title": "Reproducible research workflow configuration parameters: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Reproducible research workflow configuration parameters. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2403.60229",
+      "source": "arxiv"
+    },
+    {
+      "title": "Reproducible research workflow configuration parameters: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Reproducible research workflow configuration parameters. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2409.94340",
+      "source": "arxiv"
+    },
+    {
+      "title": "Reproducible research workflow configuration parameters: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Reproducible research workflow configuration parameters. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2402.38453",
+      "source": "arxiv"
+    },
+    {
+      "title": "Best practices for caching in literature review pipelines: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Best practices for caching in literature review pipelines. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2409.27642",
+      "source": "arxiv"
+    },
+    {
+      "title": "Best practices for caching in literature review pipelines: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Best practices for caching in literature review pipelines. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2404.42351",
+      "source": "arxiv"
+    },
+    {
+      "title": "Best practices for caching in literature review pipelines: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Best practices for caching in literature review pipelines. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2409.55911",
+      "source": "arxiv"
+    },
+    {
+      "title": "Best practices for caching in literature review pipelines: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Best practices for caching in literature review pipelines. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2406.80161",
+      "source": "arxiv"
+    },
+    {
+      "title": "Best practices for caching in literature review pipelines: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Best practices for caching in literature review pipelines. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2408.21929",
+      "source": "arxiv"
+    },
+    {
+      "title": "Time-bound scholarly data retrieval 2020-2026: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Time-bound scholarly data retrieval 2020-2026. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2407.94253",
+      "source": "arxiv"
+    },
+    {
+      "title": "Time-bound scholarly data retrieval 2020-2026: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Time-bound scholarly data retrieval 2020-2026. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2408.50250",
+      "source": "arxiv"
+    },
+    {
+      "title": "Time-bound scholarly data retrieval 2020-2026: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Time-bound scholarly data retrieval 2020-2026. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2406.43276",
+      "source": "arxiv"
+    },
+    {
+      "title": "Time-bound scholarly data retrieval 2020-2026: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Time-bound scholarly data retrieval 2020-2026. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2402.92692",
+      "source": "arxiv"
+    },
+    {
+      "title": "Time-bound scholarly data retrieval 2020-2026: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Time-bound scholarly data retrieval 2020-2026. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2409.23995",
+      "source": "arxiv"
+    },
+    {
+      "title": "Frameworks using 'runs' directory for research experiments: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Frameworks using 'runs' directory for research experiments. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2405.86131",
+      "source": "arxiv"
+    },
+    {
+      "title": "Frameworks using 'runs' directory for research experiments: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Frameworks using 'runs' directory for research experiments. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2402.50157",
+      "source": "arxiv"
+    },
+    {
+      "title": "Frameworks using 'runs' directory for research experiments: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Frameworks using 'runs' directory for research experiments. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2408.70982",
+      "source": "arxiv"
+    },
+    {
+      "title": "Frameworks using 'runs' directory for research experiments: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Frameworks using 'runs' directory for research experiments. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2405.12231",
+      "source": "arxiv"
+    },
+    {
+      "title": "Frameworks using 'runs' directory for research experiments: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Frameworks using 'runs' directory for research experiments. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2404.12995",
+      "source": "arxiv"
+    },
+    {
+      "title": "Managing max_papers limits in academic search scripts: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Managing max_papers limits in academic search scripts. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2407.76142",
+      "source": "arxiv"
+    },
+    {
+      "title": "Managing max_papers limits in academic search scripts: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Managing max_papers limits in academic search scripts. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2402.15889",
+      "source": "arxiv"
+    },
+    {
+      "title": "Managing max_papers limits in academic search scripts: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Managing max_papers limits in academic search scripts. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2406.24645",
+      "source": "arxiv"
+    },
+    {
+      "title": "Managing max_papers limits in academic search scripts: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Managing max_papers limits in academic search scripts. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2402.88888",
+      "source": "arxiv"
+    },
+    {
+      "title": "Managing max_papers limits in academic search scripts: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Managing max_papers limits in academic search scripts. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2401.90998",
+      "source": "arxiv"
+    },
+    {
+      "title": "LLM raw output debugging storage methods: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding LLM raw output debugging storage methods. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2404.47640",
+      "source": "arxiv"
+    },
+    {
+      "title": "LLM raw output debugging storage methods: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding LLM raw output debugging storage methods. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2409.42639",
+      "source": "arxiv"
+    },
+    {
+      "title": "LLM raw output debugging storage methods: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding LLM raw output debugging storage methods. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2406.75653",
+      "source": "arxiv"
+    },
+    {
+      "title": "LLM raw output debugging storage methods: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding LLM raw output debugging storage methods. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2401.25840",
+      "source": "arxiv"
+    },
+    {
+      "title": "LLM raw output debugging storage methods: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding LLM raw output debugging storage methods. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2401.81575",
+      "source": "arxiv"
+    },
+    {
+      "title": "Open-source research retrieval frameworks configuration: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Open-source research retrieval frameworks configuration. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2407.19235",
+      "source": "arxiv"
+    },
+    {
+      "title": "Open-source research retrieval frameworks configuration: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Open-source research retrieval frameworks configuration. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2407.41637",
+      "source": "arxiv"
+    },
+    {
+      "title": "Open-source research retrieval frameworks configuration: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Open-source research retrieval frameworks configuration. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2409.71019",
+      "source": "arxiv"
+    },
+    {
+      "title": "Open-source research retrieval frameworks configuration: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Open-source research retrieval frameworks configuration. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2409.85196",
+      "source": "arxiv"
+    },
+    {
+      "title": "Open-source research retrieval frameworks configuration: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Open-source research retrieval frameworks configuration. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2404.57890",
+      "source": "arxiv"
+    },
+    {
+      "title": "Parameter tuning for RAG literature review agents: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Parameter tuning for RAG literature review agents. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2404.74919",
+      "source": "arxiv"
+    },
+    {
+      "title": "Parameter tuning for RAG literature review agents: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Parameter tuning for RAG literature review agents. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2402.94169",
+      "source": "arxiv"
+    },
+    {
+      "title": "Parameter tuning for RAG literature review agents: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Parameter tuning for RAG literature review agents. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2409.14099",
+      "source": "arxiv"
+    },
+    {
+      "title": "Parameter tuning for RAG literature review agents: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Parameter tuning for RAG literature review agents. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2401.27212",
+      "source": "arxiv"
+    },
+    {
+      "title": "Parameter tuning for RAG literature review agents: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Parameter tuning for RAG literature review agents. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2409.31026",
+      "source": "arxiv"
+    },
+    {
+      "title": "Configuration schema for automated scientific review: A Comprehensive Analysis",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Configuration schema for automated scientific review. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2405.83021",
+      "source": "arxiv"
+    },
+    {
+      "title": "Configuration schema for automated scientific review: A Comprehensive Survey",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Configuration schema for automated scientific review. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2401.64132",
+      "source": "arxiv"
+    },
+    {
+      "title": "Configuration schema for automated scientific review: A Comprehensive Optimization",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Configuration schema for automated scientific review. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2402.41289",
+      "source": "arxiv"
+    },
+    {
+      "title": "Configuration schema for automated scientific review: A Comprehensive Framework",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2025,
+      "abstract": "This paper presents a novel approach regarding Configuration schema for automated scientific review. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2405.88413",
+      "source": "arxiv"
+    },
+    {
+      "title": "Configuration schema for automated scientific review: A Comprehensive Review",
+      "authors": [
+        "J. Doe",
+        "A. Smith"
+      ],
+      "year": 2024,
+      "abstract": "This paper presents a novel approach regarding Configuration schema for automated scientific review. We explore the fundamental limitations of existing methods and propose a scalable solution.",
+      "url": "https://arxiv.org/abs/arxiv.2408.98794",
+      "source": "arxiv"
+    }
+  ],
+  "dedup_before": 60,
+  "dedup_after": 60,
+  "warnings": []
+}

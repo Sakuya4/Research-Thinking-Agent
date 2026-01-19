@@ -1,0 +1,38 @@
+{
+  "expanded_queries": [
+    "Configuration parameters for automated literature retrieval agents",
+    "Best practices for research scoping tool configuration",
+    "Optimizing max_papers limits in RAG pipelines",
+    "Time-based filtering strategies for scientific search 2020-2026",
+    "Performance analysis of live vs cached academic retrieval mode",
+    "Impact of cache_ttl settings on research reproducibility",
+    "Systematic review automation tools configuration",
+    "Recent developments in metadata search limits 2020 onwards",
+    "Standardized run directories for research software outputs",
+    "Designing efficient LLM literature review architectures",
+    "Debug logging and raw LLM output storage standards",
+    "Trade-offs in real-time academic literature fetching"
+  ],
+  "must_include": [
+    "Retrieval-Augmented Generation (RAG)",
+    "Literature Search Configuration",
+    "Search Parameters",
+    "Caching Strategy",
+    "Time-based filtering"
+  ],
+  "exclude": [
+    "Generic database performance tuning",
+    "Web caching protocols (non-LLM related)",
+    "File system optimization guides"
+  ],
+  "target_subtasks": [
+    "Identify industry standards for configuring research retrieval systems (e.g., max_papers, min_year).",
+    "Analyze the operational cost and latency of 'live' retrieval modes versus cached methods.",
+    "Evaluate the necessity and security implications of storing raw LLM outputs for debugging.",
+    "Survey literature on optimal cache Time-To-Live (TTL) settings for rapid knowledge domains.",
+    "Examine trends in automated systematic review tools published between 2020 and 2026.",
+    "Determine best practices for structuring and managing 'runs' directories in reproducible research projects.",
+    "Investigate the role of parameter limits (like 80 papers) in controlling hallucination and focus."
+  ],
+  "notes": "The search focuses on the architecture and configuration parameters of automated research scoping agents and RAG systems, prioritizing literature from the past few years (2020+). Efficiency, reproducibility, and parameter tuning are key areas."
+}
