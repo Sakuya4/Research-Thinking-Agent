@@ -19,7 +19,6 @@ from .config import RTAConfig
 from .pipeline import run_pipeline
 from .schemas import InputPayload
 
-
 RTA_BANNER = r"""
 ██████╗ ████████╗ █████╗
 ██╔══██╗╚══██╔══╝██╔══██╗
@@ -262,9 +261,9 @@ class RTAShell:
             return
 
         mapping = {
-            "plan": "query_plan.json",
+            "plan": "plan.json",           # [FIX] aligned filename
             "retrieval": "retrieval.json",
-            "status": "status.json",
+            "status": "structuring.json",  # [FIX] aligned filename
             "reasoning": "reasoning.json",
         }
         fname = mapping.get(what)
@@ -294,10 +293,10 @@ class RTAShell:
             return
 
         mapping = {
-            "report": "report.md",
-            "plan": "query_plan.json",
+            "report": "report.md",         # [FIX] aligned filename
+            "plan": "plan.json",           # [FIX] aligned filename
             "retrieval": "retrieval.json",
-            "status": "status.json",
+            "status": "structuring.json",  # [FIX] aligned filename
             "reasoning": "reasoning.json",
         }
         fname = mapping.get(what)
@@ -313,6 +312,71 @@ class RTAShell:
         txt = p.read_text(encoding="utf-8", errors="replace")
         pydoc.pager(txt)
 
+    # --------------------------------------------------------------------------
+    # NEW: Chat Mode Method
+    # --------------------------------------------------------------------------
+    def _enter_chat_mode(self, topic, report_path):
+        """Starts an interactive chat session about the research results."""
+        from rich.console import Console
+        
+        # Use local import to avoid circular dependency
+        try:
+            from rta.utils.llm_client import get_default_client
+        except ImportError:
+            _print(self.style, "err", "[Chat] Failed to import LLM client.")
+            return
+
+        console = Console()
+        client = get_default_client()
+        
+        console.print("\n[bold green]RTA is ready to discuss findings with you (in English).[/bold green]")
+        console.print(f"[dim]Based on: {topic} and retrieved papers.[/dim]")
+        console.print("[dim]Type 'exit' or 'quit' to end the chat.[/dim]\n")
+        
+        # System prompt to enforce the persona
+        system_context = (
+            f"You are a helpful research assistant. You have just finished analyzing the topic '{topic}'. "
+            f"The user wants to discuss the findings. "
+            f"Your goal is to help the user Brainstorm and Extend the research.\n"
+            f"Rules:\n"
+            f"1. Answer strictly in English.\n"
+            f"2. Be concise but insightful.\n"
+            f"3. Proactively suggest applications (e.g., if relevant, mention LVEF, clinical integration, etc.)."
+        )
+
+        # Chat Loop
+        while True:
+            try:
+                # Use standard input for simplicity in this mode
+                user_input = input("\n[bold blue](You) > [/bold blue]").strip()
+                
+                if user_input.lower() in ['exit', 'quit']:
+                    console.print("[yellow]Exiting chat mode.[/yellow]")
+                    break
+                
+                if not user_input:
+                    continue
+
+                with console.status("[bold blue]RTA is thinking...[/bold blue]", spinner="dots"):
+                    # Construct prompt
+                    prompt = (
+                        f"{system_context}\n\n"
+                        f"User: {user_input}\n"
+                        f"RTA:"
+                    )
+                    # Call LLM
+                    response = client.generate_text(prompt)
+                
+                # Print response nicely
+                console.print(f"\n[bold cyan](RTA)[/bold cyan]: {response}")
+                
+            except KeyboardInterrupt:
+                console.print("\n[yellow]Interrupted. Exiting chat mode.[/yellow]")
+                break
+            except Exception as e:
+                console.print(f"[red]Chat Error: {e}[/red]")
+                break
+
     def _cmd_run(self, topic: str) -> None:
         _hr(self.style)
         _print(self.style, "title", f"Topic: {topic}")
@@ -322,10 +386,19 @@ class RTAShell:
         os.environ["RTA_SOURCES"] = self.sources
 
         try:
-            _, run_dir = run_pipeline(self.cfg, InputPayload(query=topic, context=""))
+            # [FIX] Correct function call matching the latest pipeline.py
+            success, run_dir = run_pipeline(topic, output_dir=self.cfg.runs_dir)
+            
             self.last_run_dir = Path(run_dir)
-            _print(self.style, "ok", f"[OK] Saved outputs: {run_dir}")
-            _print(self.style, "dim", "Try: /show retrieval  |  /show status  |  /open report  |  /last")
+            
+            if success:
+                _print(self.style, "ok", f"[OK] Saved outputs: {run_dir}")
+                _print(self.style, "dim", "Try: /show retrieval  |  /show status  |  /open report  |  /last")
+                # [NEW] Enter chat mode automatically
+                self._enter_chat_mode(topic, run_dir)
+            else:
+                _print(self.style, "err", "[Fail] Pipeline did not complete successfully.")
+
             _hr(self.style)
             return
 

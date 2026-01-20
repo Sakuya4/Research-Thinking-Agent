@@ -89,7 +89,7 @@ class ReasoningEngine:
         return "Unknown Research Topic"
 
     def _build_draft_prompt(self, topic: str, clusters: Any, papers: list) -> str:
-        """Constructs the prompt for the initial draft generation."""
+        """Constructs the prompt for the initial draft generation with EXTENSION capabilities."""
         # Extract cluster names for context
         cluster_names = []
         if hasattr(clusters, 'clusters'):
@@ -97,10 +97,23 @@ class ReasoningEngine:
                 name = getattr(c, 'name', getattr(c, 'topic_name', 'Unnamed Cluster'))
                 cluster_names.append(name)
         
+        # [UPDATED] Added explicit instructions for "Innovative Extensions" and "Applications"
         return (
-            f"Generate a structured research reasoning report for the topic: '{topic}'.\n"
-            f"Analyzed {len(papers)} papers across these sub-topics: {', '.join(cluster_names)}.\n"
-            f"Identify key findings, research gaps, and synthesize the logic."
+            f"You are a visionary Lead Researcher. Your task is to analyze the retrieved literature and conduct a deep synthesis.\n"
+            f"User Topic: '{topic}'\n"
+            f"The system has retrieved {len(papers)} papers, categorized into: {', '.join(cluster_names)}.\n\n"
+            
+            f"Please generate a 'ReasoningResult' JSON with the following mindset:\n"
+            f"1. **Synthesis**: Summarize the core findings and consensus from the papers.\n"
+            f"2. **Critical Gaps**: Identify what is missing in the current literature.\n"
+            f"3. **INNOVATIVE EXTENSIONS (Crucial)**: \n"
+            f"   - Based on the retrieved methods, how can we extend this technology further?\n"
+            f"   - Think explicitly about downstream applications and practical use cases. \n"
+            f"   - Example: If the topic is 'Handheld Ultrasound', do not just stop at 'image quality'. \n"
+            f"     Extend it to 'AI-guided needle insertion', 'Automated LVEF calculation', or 'Real-time pathology detection'.\n"
+            f"   - Propose 3 specific, technically grounded future directions that combine the user's topic with the retrieved evidence.\n\n"
+            
+            f"Ensure the output is strictly valid JSON matching the schema."
         )
 
     def _critique_result(self, result: Any) -> str:
