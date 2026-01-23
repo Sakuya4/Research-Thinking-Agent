@@ -87,11 +87,12 @@ The long-term goal is to evolve this agent into a true **AI research collaborato
 ### 2) Install Dependencies
 
 Recommended to use a virtual environment:
+
 In project root enter
 
 ```
-python -m venv .venv # Create a virtual environment
-.\.venv\Scripts\Activate # Entering a virtual environment
+python -m venv .venv        # Create a virtual environment
+.\.venv\Scripts\Activate    # Entering a virtual environment
 ```
 
 From project root:
