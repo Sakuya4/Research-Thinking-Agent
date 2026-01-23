@@ -26,7 +26,9 @@ RTA_BANNER = r"""
 ██╔══██╗   ██║   ██╔══██║
 ██║  ██║   ██║   ██║  ██║
 ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
-""".strip("\n")
+""".strip(
+    "\n"
+)
 
 
 def _print(style: Style, tag: str, msg: str) -> None:
@@ -36,6 +38,7 @@ def _print(style: Style, tag: str, msg: str) -> None:
 
 def _print_kv(style: Style, key: str, value: str) -> None:
     import html as _html
+
     k = _html.escape(key)
     v = _html.escape(value)
     print_formatted_text(HTML(f"<dim>{k}</dim> {v}"), style=style)
@@ -123,22 +126,38 @@ class RTAShell:
     def run(self) -> None:
         print_formatted_text(HTML(f"\n<banner>{RTA_BANNER}</banner>"), style=self.style)
         _print(self.style, "title", "Research Thinking Agent")
-        _print(self.style, "hint", "Type /help for commands. Use /run <topic> to start.\n")
+        _print(
+            self.style, "hint", "Type /help for commands. Use /run <topic> to start.\n"
+        )
 
         if not _has_gemini_key():
             self._warned_missing_key = True
-            _print(self.style, "warn", "[WARN] GEMINI_API_KEY not set. Live LLM steps may be unavailable.")
-            _print(self.style, "hint", "       Create a .env file (recommended) or set $env:GEMINI_API_KEY='...'\n")
+            _print(
+                self.style,
+                "warn",
+                "[WARN] GEMINI_API_KEY not set. Live LLM steps may be unavailable.",
+            )
+            _print(
+                self.style,
+                "hint",
+                "       Create a .env file (recommended) or set $env:GEMINI_API_KEY='...'\n",
+            )
 
         while True:
             try:
-                line = self._session.prompt(HTML("<prompt>rta&gt; </prompt>"), style=self.style).strip()
+                line = self._session.prompt(
+                    HTML("<prompt>rta&gt; </prompt>"), style=self.style
+                ).strip()
             except (EOFError, KeyboardInterrupt):
                 print()
                 return
 
             if not line:
-                _print(self.style, "dim", "Tip: /run <topic>  |  /set retrieval_mode mock  |  /open report  |  /help")
+                _print(
+                    self.style,
+                    "dim",
+                    "Tip: /run <topic>  |  /set retrieval_mode mock  |  /open report  |  /help",
+                )
                 continue
 
             if line.startswith("/"):
@@ -151,7 +170,7 @@ class RTAShell:
 
     def _handle_command(self, line: str) -> bool:
         parts = line[1:].strip().split()
-        cmd = (parts[0].lower() if parts else "")
+        cmd = parts[0].lower() if parts else ""
         args = parts[1:]
 
         if cmd in ("exit", "quit"):
@@ -193,11 +212,23 @@ class RTAShell:
         _print(self.style, "title", "Commands")
         _print_kv(self.style, "/run <topic>", "Run once (plain text also works)")
         _print_kv(self.style, "/set <key> <value>", "Set config for this session")
-        _print_kv(self.style, "  keys", "max_papers, min_year, max_year, retrieval_mode, sources")
+        _print_kv(
+            self.style,
+            "  keys",
+            "max_papers, min_year, max_year, retrieval_mode, sources",
+        )
         _print_kv(self.style, "  retrieval_mode", "mock | live")
         _print_kv(self.style, "  sources", "both | arxiv | s2")
-        _print_kv(self.style, "/show <what>", "Print JSON (trimmed): config|plan|retrieval|status|reasoning")
-        _print_kv(self.style, "/open <what>", "View file in CLI pager: report|plan|retrieval|status|reasoning")
+        _print_kv(
+            self.style,
+            "/show <what>",
+            "Print JSON (trimmed): config|plan|retrieval|status|reasoning",
+        )
+        _print_kv(
+            self.style,
+            "/open <what>",
+            "View file in CLI pager: report|plan|retrieval|status|reasoning",
+        )
         _print_kv(self.style, "/last", "Show last run directory")
         _print_kv(self.style, "/exit", "Quit")
         _hr(self.style)
@@ -245,7 +276,11 @@ class RTAShell:
 
     def _cmd_show(self, args) -> None:
         if not args:
-            _print(self.style, "err", "[ERR] Usage: /show config|plan|retrieval|status|reasoning")
+            _print(
+                self.style,
+                "err",
+                "[ERR] Usage: /show config|plan|retrieval|status|reasoning",
+            )
             return
 
         what = args[0].lower()
@@ -261,14 +296,18 @@ class RTAShell:
             return
 
         mapping = {
-            "plan": "plan.json",           # [FIX] aligned filename
+            "plan": "plan.json",  # [FIX] aligned filename
             "retrieval": "retrieval.json",
             "status": "structuring.json",  # [FIX] aligned filename
             "reasoning": "reasoning.json",
         }
         fname = mapping.get(what)
         if not fname:
-            _print(self.style, "err", "[ERR] Usage: /show config|plan|retrieval|status|reasoning")
+            _print(
+                self.style,
+                "err",
+                "[ERR] Usage: /show config|plan|retrieval|status|reasoning",
+            )
             return
 
         p = self.last_run_dir / fname
@@ -283,7 +322,11 @@ class RTAShell:
 
     def _cmd_open(self, args) -> None:
         if not args:
-            _print(self.style, "err", "[ERR] Usage: /open report|plan|retrieval|status|reasoning")
+            _print(
+                self.style,
+                "err",
+                "[ERR] Usage: /open report|plan|retrieval|status|reasoning",
+            )
             return
 
         what = args[0].lower()
@@ -293,15 +336,19 @@ class RTAShell:
             return
 
         mapping = {
-            "report": "report.md",         # [FIX] aligned filename
-            "plan": "plan.json",           # [FIX] aligned filename
+            "report": "report.md",  # [FIX] aligned filename
+            "plan": "plan.json",  # [FIX] aligned filename
             "retrieval": "retrieval.json",
             "status": "structuring.json",  # [FIX] aligned filename
             "reasoning": "reasoning.json",
         }
         fname = mapping.get(what)
         if not fname:
-            _print(self.style, "err", "[ERR] Usage: /open report|plan|retrieval|status|reasoning")
+            _print(
+                self.style,
+                "err",
+                "[ERR] Usage: /open report|plan|retrieval|status|reasoning",
+            )
             return
 
         p = self.last_run_dir / fname
@@ -318,7 +365,7 @@ class RTAShell:
     def _enter_chat_mode(self, topic, report_path):
         """Starts an interactive chat session about the research results."""
         from rich.console import Console
-        
+
         # Use local import to avoid circular dependency
         try:
             from rta.utils.llm_client import get_default_client
@@ -328,11 +375,13 @@ class RTAShell:
 
         console = Console()
         client = get_default_client()
-        
-        console.print("\n[bold green]RTA is ready to discuss findings with you (in English).[/bold green]")
+
+        console.print(
+            "\n[bold green]RTA is ready to discuss findings with you (in English).[/bold green]"
+        )
         console.print(f"[dim]Based on: {topic} and retrieved papers.[/dim]")
         console.print("[dim]Type 'exit' or 'quit' to end the chat.[/dim]\n")
-        
+
         # System prompt to enforce the persona
         system_context = (
             f"You are a helpful research assistant. You have just finished analyzing the topic '{topic}'. "
@@ -348,28 +397,26 @@ class RTAShell:
         while True:
             try:
                 # Use standard input for simplicity in this mode
-                user_input = input("\n[bold blue](You) > [/bold blue]").strip()
-                
-                if user_input.lower() in ['exit', 'quit']:
+                user_input = console.input("\n[bold blue](You) > [/bold blue]").strip()
+
+                if user_input.lower() in ["exit", "quit"]:
                     console.print("[yellow]Exiting chat mode.[/yellow]")
                     break
-                
+
                 if not user_input:
                     continue
 
-                with console.status("[bold blue]RTA is thinking...[/bold blue]", spinner="dots"):
+                with console.status(
+                    "[bold blue]RTA is thinking...[/bold blue]", spinner="dots"
+                ):
                     # Construct prompt
-                    prompt = (
-                        f"{system_context}\n\n"
-                        f"User: {user_input}\n"
-                        f"RTA:"
-                    )
+                    prompt = f"{system_context}\n\n" f"User: {user_input}\n" f"RTA:"
                     # Call LLM
                     response = client.generate_text(prompt)
-                
+
                 # Print response nicely
                 console.print(f"\n[bold cyan](RTA)[/bold cyan]: {response}")
-                
+
             except KeyboardInterrupt:
                 console.print("\n[yellow]Interrupted. Exiting chat mode.[/yellow]")
                 break
@@ -380,7 +427,11 @@ class RTAShell:
     def _cmd_run(self, topic: str) -> None:
         _hr(self.style)
         _print(self.style, "title", f"Topic: {topic}")
-        _print(self.style, "dim", f"Config: max_papers={self.cfg.max_papers}, mode={self.cfg.retrieval_mode}, sources={self.sources}")
+        _print(
+            self.style,
+            "dim",
+            f"Config: max_papers={self.cfg.max_papers}, mode={self.cfg.retrieval_mode}, sources={self.sources}",
+        )
         _hr(self.style)
 
         os.environ["RTA_SOURCES"] = self.sources
@@ -388,16 +439,22 @@ class RTAShell:
         try:
             # [FIX] Correct function call matching the latest pipeline.py
             success, run_dir = run_pipeline(topic, output_dir=self.cfg.runs_dir)
-            
+
             self.last_run_dir = Path(run_dir)
-            
+
             if success:
                 _print(self.style, "ok", f"[OK] Saved outputs: {run_dir}")
-                _print(self.style, "dim", "Try: /show retrieval  |  /show status  |  /open report  |  /last")
+                _print(
+                    self.style,
+                    "dim",
+                    "Try: /show retrieval  |  /show status  |  /open report  |  /last",
+                )
                 # [NEW] Enter chat mode automatically
                 self._enter_chat_mode(topic, run_dir)
             else:
-                _print(self.style, "err", "[Fail] Pipeline did not complete successfully.")
+                _print(
+                    self.style, "err", "[Fail] Pipeline did not complete successfully."
+                )
 
             _hr(self.style)
             return
@@ -410,7 +467,15 @@ class RTAShell:
 
             _print(self.style, "err", f"[ERR] {e}")
             if "GEMINI_API_KEY" in str(e):
-                _print(self.style, "hint", "Tip: create a .env file with GEMINI_API_KEY=... (recommended)\n")
+                _print(
+                    self.style,
+                    "hint",
+                    "Tip: create a .env file with GEMINI_API_KEY=... (recommended)\n",
+                )
             else:
-                _print(self.style, "hint", "Tip: use /last then /open status to inspect failure.\n")
+                _print(
+                    self.style,
+                    "hint",
+                    "Tip: use /last then /open status to inspect failure.\n",
+                )
             return

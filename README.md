@@ -9,7 +9,7 @@
 Academic research rarely starts with a clear problem statement.  
 More often, it begins with a vague idea, a few keywords, or an intuition that something is worth exploring.
 
-However, most existing AI tools assume that users already know *what* to search for. In reality, researchers often struggle with an earlier and more fundamental challenge: **figuring out the right research direction and framing the problem itself**.
+However, most existing AI tools assume that users already know _what_ to search for. In reality, researchers often struggle with an earlier and more fundamental challenge: **figuring out the right research direction and framing the problem itself**.
 
 This project was inspired by my own experience of getting stuck at the beginning of research—knowing the topic, but not knowing how to systematically think through the space or identify meaningful literature to read.
 
@@ -17,9 +17,10 @@ This project was inspired by my own experience of getting stuck at the beginning
 
 ## What It Does
 
-This project is an **AI research thinking agent** designed to support researchers *before* they start reading papers.
+This project is an **AI research thinking agent** designed to support researchers _before_ they start reading papers.
 
 Given a small set of keywords or a high-level research idea, the agent:
+
 - Decomposes the idea into structured sub-problems
 - Identifies common methodologies and learning paradigms for each sub-problem
 - Generates well-scoped academic search queries and research directions
@@ -34,11 +35,12 @@ Instead of returning a list of papers, the agent focuses on **helping users thin
 The system is implemented as a **command-line AI agent** using the Google Gemini API.
 
 The agent operates in multiple reasoning stages:
-1. **Concept Expansion** – Breaking down vague research ideas into concrete sub-problems  
-2. **Method Mapping** – Connecting each sub-problem to commonly used approaches in academia  
-3. **Search Strategy Generation** – Producing structured, high-quality search keywords and venues  
 
-Gemini models are prompted to act as a *research advisor*, producing structured JSON outputs that represent intermediate reasoning steps. These outputs are then transformed into human-readable Markdown summaries for research planning.
+1. **Concept Expansion** – Breaking down vague research ideas into concrete sub-problems
+2. **Method Mapping** – Connecting each sub-problem to commonly used approaches in academia
+3. **Search Strategy Generation** – Producing structured, high-quality search keywords and venues
+
+Gemini models are prompted to act as a _research advisor_, producing structured JSON outputs that represent intermediate reasoning steps. These outputs are then transformed into human-readable Markdown summaries for research planning.
 
 This agent-based design keeps the reasoning process transparent, inspectable, and reusable.
 
@@ -56,16 +58,17 @@ Another challenge was finding the right balance between flexibility and structur
 
 ## Accomplishments That We Proud Of
 
-- Designing an AI agent that focuses on **research thinking**, not just information retrieval  
-- Creating a reusable, structured reasoning pipeline instead of a single-pass response  
-- Successfully using Gemini models to perform multi-stage, research-oriented reasoning  
-- Building a tool that reflects how real researchers actually think and explore ideas  
+- Designing an AI agent that focuses on **research thinking**, not just information retrieval
+- Creating a reusable, structured reasoning pipeline instead of a single-pass response
+- Successfully using Gemini models to perform multi-stage, research-oriented reasoning
+- Building a tool that reflects how real researchers actually think and explore ideas
 
 ---
 
 ## What's Next for the Agent
 
 Future directions for this agent include:
+
 - Integrating direct connections to academic databases (e.g., arXiv or Semantic Scholar)
 - Adding iterative refinement, where users can guide or constrain the agent’s reasoning
 - Supporting visual research maps and citation graphs
@@ -78,9 +81,18 @@ The long-term goal is to evolve this agent into a true **AI research collaborato
 ## Requirements / Prerequisites
 
 ### 1) Python
+
 - Python **3.10+** recommended
 
 ### 2) Install Dependencies
+
+Recommended to use a virtual environment:
+In project root enter
+
+```
+python -m venv .venv # Create a virtual environment
+.\.venv\Scripts\Activate # Entering a virtual environment
+```
 
 From project root:
 
@@ -89,12 +101,13 @@ pip install -e .
 ```
 
 ### 3) Google AI Studio API Key
+
 You need a Gemini API key from Google AI Studio.
 
 Create a .env file in the project root:
 
 ```
-GOOGLE_API_KEY=your_key_here
+GEMINI_API_KEY=your_key_here
 GEMINI_MODEL=gemini-flash-latest
 ```
 
@@ -103,38 +116,40 @@ GEMINI_MODEL=gemini-flash-latest
 ## How To Run
 
 Interactive CLI Mode
+
 ```
-rta 
+rta
 ```
 
 Then type a topic, for example:
-  - ultrasound heart failure
-  - LLM agent benchmarks
-  - bio-impedance pulse wave modeling
+
+- ultrasound heart failure
+- LLM agent benchmarks
+- bio-impedance pulse wave modeling
 
 The system will generate outputs and save them under runs/<run_id>/.
 
---- 
+---
+
 ## References & Inspirations
 
-This project is inspired by recent research on large language model (LLM) agents, 
+This project is inspired by recent research on large language model (LLM) agents,
 automated research workflows, and agentic systems for scientific reasoning and synthesis.
 
 In particular, the overall system design and long-term vision are influenced by the following works:
 
 - **Liu et al., 2025**  
-  *A Vision for Auto Research with LLM Agents*  
-  arXiv preprint arXiv:2504.18765  
+  _A Vision for Auto Research with LLM Agents_  
+  arXiv preprint arXiv:2504.18765
 
 - **Cao et al., 2025**  
-  *Large Language Models for Planning: A Comprehensive and Systematic Survey*  
-  arXiv preprint arXiv:2505.19683  
+  _Large Language Models for Planning: A Comprehensive and Systematic Survey_  
+  arXiv preprint arXiv:2505.19683
 
 - **Shittu & Quaye, 2025**  
-  *AI-Assisted Handheld Echocardiography by Nonexpert Operators: A Narrative Review of Prospective Studies*  
-  Cureus, 17(11): e97050. doi:10.7759/cureus.97050  
-
+  _AI-Assisted Handheld Echocardiography by Nonexpert Operators: A Narrative Review of Prospective Studies_  
+  Cureus, 17(11): e97050. doi:10.7759/cureus.97050
 
 - **Liu et al., 2025**  
-  *Agentic AutoSurvey: Let LLMs Survey LLMs*  
-  arXiv preprint arXiv:2509.18661  
+  _Agentic AutoSurvey: Let LLMs Survey LLMs_  
+  arXiv preprint arXiv:2509.18661
