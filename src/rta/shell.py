@@ -4,8 +4,9 @@ import json
 import os
 import pydoc
 import html
+import re  # [NEW] For parsing citations
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, List
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
@@ -87,27 +88,10 @@ class RTAShell:
 
         self._completer = WordCompleter(
             [
-                "/help",
-                "/run",
-                "/set",
-                "/show",
-                "/open",
-                "/last",
-                "/exit",
-                "max_papers",
-                "min_year",
-                "max_year",
-                "retrieval_mode",
-                "sources",
-                "both",
-                "arxiv",
-                "s2",
-                "config",
-                "plan",
-                "retrieval",
-                "status",
-                "report",
-                "reasoning",
+                "/help", "/run", "/set", "/show", "/open", "/last", "/exit",
+                "max_papers", "min_year", "max_year", "retrieval_mode",
+                "sources", "both", "arxiv", "s2",
+                "config", "plan", "retrieval", "status", "report", "reasoning",
             ],
             ignore_case=True,
         )
@@ -261,9 +245,9 @@ class RTAShell:
             return
 
         mapping = {
-            "plan": "plan.json",           # [FIX] aligned filename
+            "plan": "plan.json",           
             "retrieval": "retrieval.json",
-            "status": "structuring.json",  # [FIX] aligned filename
+            "status": "structuring.json",  
             "reasoning": "reasoning.json",
         }
         fname = mapping.get(what)
@@ -293,10 +277,10 @@ class RTAShell:
             return
 
         mapping = {
-            "report": "report.md",         # [FIX] aligned filename
-            "plan": "plan.json",           # [FIX] aligned filename
+            "report": "report.md",         
+            "plan": "plan.json",           
             "retrieval": "retrieval.json",
-            "status": "structuring.json",  # [FIX] aligned filename
+            "status": "structuring.json",  
             "reasoning": "reasoning.json",
         }
         fname = mapping.get(what)
@@ -313,11 +297,12 @@ class RTAShell:
         pydoc.pager(txt)
 
     # --------------------------------------------------------------------------
-    # NEW: Chat Mode Method
+    # NEW: Chat Mode Method with Citations
     # --------------------------------------------------------------------------
-    def _enter_chat_mode(self, topic, report_path):
-        """Starts an interactive chat session about the research results."""
+    def _enter_chat_mode(self, topic: str, run_dir: str):
+        """Interactive chat session with citation support."""
         from rich.console import Console
+        from rich.rule import Rule
         
         # Use local import to avoid circular dependency
         try:
@@ -328,27 +313,74 @@ class RTAShell:
 
         console = Console()
         client = get_default_client()
+        run_path = Path(run_dir)
         
-        console.print("\n[bold green]RTA is ready to discuss findings with you (in English).[/bold green]")
+        # 1. Load Retrieved Papers for Context
+        papers_context = ""
+        paper_map: Dict[str, str] = {}
+        retrieval_file = run_path / "retrieval.json"
+        
+        if retrieval_file.exists():
+            try:
+                data = json.loads(retrieval_file.read_text(encoding="utf-8"))
+                # Handle cases where data is a list (from mock) or dict
+                if isinstance(data, list):
+                    papers = data
+                else:
+                    papers = data.get('papers', [])
+                
+                context_lines = []
+                for idx, p in enumerate(papers, 1):
+                    # Robust access to fields
+                    title = p.get('title', 'Unknown Title')
+                    # Author handling
+                    authors = p.get('authors', [])
+                    if isinstance(authors, list) and authors:
+                        first_author = authors[0]
+                    elif isinstance(authors, str):
+                        first_author = authors
+                    else:
+                        first_author = "Unknown"
+                    
+                    year = p.get('year', 'n.d.')
+                    
+                    # Store lookup: [1] -> Title (Author, Year)
+                    citation_key = f"[{idx}]"
+                    citation_text = f"{title} ({first_author}, {year})"
+                    
+                    paper_map[citation_key] = citation_text
+                    context_lines.append(f"{citation_key} {citation_text}")
+                
+                papers_context = "\n".join(context_lines)
+            except Exception:
+                papers_context = "(Failed to load papers)"
+
+        console.print("\n[bold green]RTA is ready to discuss findings with citations.[/bold green]")
         console.print(f"[dim]Based on: {topic} and retrieved papers.[/dim]")
         console.print("[dim]Type 'exit' or 'quit' to end the chat.[/dim]\n")
         
-        # System prompt to enforce the persona
+        # 2. System Prompt with Citation Instructions
         system_context = (
-            f"You are a helpful research assistant. You have just finished analyzing the topic '{topic}'. "
-            f"The user wants to discuss the findings. "
+            f"You are a helpful research assistant. You have just finished analyzing the topic '{topic}'.\n"
+            f"You have access to the following retrieved papers:\n"
+            f"--------------------------------------------------\n"
+            f"{papers_context}\n"
+            f"--------------------------------------------------\n"
             f"Your goal is to help the user Brainstorm and Extend the research.\n"
             f"Rules:\n"
             f"1. Answer strictly in English.\n"
             f"2. Be concise but insightful.\n"
-            f"3. Proactively suggest applications (e.g., if relevant, mention LVEF, clinical integration, etc.)."
+            f"3. Proactively suggest applications (e.g., if relevant, mention LVEF, clinical integration, etc.).\n"
+            f"4. CITATION RULE: When your statement is supported by a paper in the list, YOU MUST cite it using [ID].\n"
+            f"   Example: 'Deep learning improves accuracy [3], especially in noisy images [5].'\n"
+            f"5. If no paper supports a point, use general knowledge but do not invent citations."
         )
 
         # Chat Loop
         while True:
             try:
-                # Use standard input for simplicity in this mode
-                user_input = input("\n[bold blue](You) > [/bold blue]").strip()
+                # Using console.input is safer for rich formatting in prompts
+                user_input = console.input("\n[bold blue](You) > [/bold blue]").strip()
                 
                 if user_input.lower() in ['exit', 'quit']:
                     console.print("[yellow]Exiting chat mode.[/yellow]")
@@ -357,7 +389,7 @@ class RTAShell:
                 if not user_input:
                     continue
 
-                with console.status("[bold blue]RTA is thinking...[/bold blue]", spinner="dots"):
+                with console.status("[bold blue]Thinking with references...[/bold blue]", spinner="dots"):
                     # Construct prompt
                     prompt = (
                         f"{system_context}\n\n"
@@ -369,6 +401,17 @@ class RTAShell:
                 
                 # Print response nicely
                 console.print(f"\n[bold cyan](RTA)[/bold cyan]: {response}")
+                
+                # 3. Post-Process: Extract and Display Citations
+                # Find all [N] in the response
+                found_citations = sorted(list(set(re.findall(r'\[\d+\]', response))))
+                
+                if found_citations:
+                    console.print(Rule(style="dim"))
+                    console.print("[bold dim]References mentioned:[/bold dim]")
+                    for key in found_citations:
+                        if key in paper_map:
+                            console.print(f"[green]{key}[/green] {paper_map[key]}")
                 
             except KeyboardInterrupt:
                 console.print("\n[yellow]Interrupted. Exiting chat mode.[/yellow]")
@@ -386,7 +429,7 @@ class RTAShell:
         os.environ["RTA_SOURCES"] = self.sources
 
         try:
-            # [FIX] Correct function call matching the latest pipeline.py
+            # Call the pipeline
             success, run_dir = run_pipeline(topic, output_dir=self.cfg.runs_dir)
             
             self.last_run_dir = Path(run_dir)
@@ -394,7 +437,7 @@ class RTAShell:
             if success:
                 _print(self.style, "ok", f"[OK] Saved outputs: {run_dir}")
                 _print(self.style, "dim", "Try: /show retrieval  |  /show status  |  /open report  |  /last")
-                # [NEW] Enter chat mode automatically
+                # Automatically enter chat mode
                 self._enter_chat_mode(topic, run_dir)
             else:
                 _print(self.style, "err", "[Fail] Pipeline did not complete successfully.")
