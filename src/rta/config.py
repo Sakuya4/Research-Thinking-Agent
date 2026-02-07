@@ -24,7 +24,7 @@ class RTAConfig(BaseSettings):
     retrieval_mode: str = Field(default="live", description="Mode: 'live' (Real API) or 'mock' (Fake Data)")
     
     # [UPDATED] Default set to 10 to prevent Rate Limit & Speed up Stage 3/4
-    max_papers: int = Field(default=3, description="Max papers to retrieve and analyze")
+    max_papers: int = Field(default=2, description="Max papers to retrieve and analyze")
     
     min_year: int = Field(default=2020, description="Filter papers published after this year")
     max_year: int = Field(default=2026, description="Filter papers published before this year")
