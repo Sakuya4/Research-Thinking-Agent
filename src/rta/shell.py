@@ -4,7 +4,7 @@ import json
 import os
 import pydoc
 import html
-import re  # [NEW] For parsing citations
+import re
 from pathlib import Path
 from typing import Optional, Dict, List
 
@@ -68,7 +68,7 @@ class RTAShell:
     def __init__(self, cfg: Optional[RTAConfig] = None):
         self.cfg = cfg or RTAConfig()
         self.last_run_dir: Optional[Path] = None
-        self.sources = os.getenv("RTA_SOURCES", "both").lower()  # both|arxiv|s2
+        self.sources = os.getenv("RTA_SOURCES", "both").lower()
 
         self.style = Style.from_dict(
             {
@@ -175,20 +175,17 @@ class RTAShell:
     def _cmd_help(self) -> None:
         _hr(self.style)
         _print(self.style, "title", "Commands")
-        _print_kv(self.style, "/run <topic>", "Run once (plain text also works)")
-        _print_kv(self.style, "/set <key> <value>", "Set config for this session")
-        _print_kv(self.style, "  keys", "max_papers, min_year, max_year, retrieval_mode, sources")
-        _print_kv(self.style, "  retrieval_mode", "mock | live")
-        _print_kv(self.style, "  sources", "both | arxiv | s2")
-        _print_kv(self.style, "/show <what>", "Print JSON (trimmed): config|plan|retrieval|status|reasoning")
-        _print_kv(self.style, "/open <what>", "View file in CLI pager: report|plan|retrieval|status|reasoning")
-        _print_kv(self.style, "/last", "Show last run directory")
+        _print_kv(self.style, "/run <topic>", "Run once")
+        _print_kv(self.style, "/set <key> <val>", "Set config (max_papers, retrieval_mode...)")
+        _print_kv(self.style, "/show <what>", "Print JSON output")
+        _print_kv(self.style, "/open <what>", "View result files")
+        _print_kv(self.style, "/last", "Show last run info")
         _print_kv(self.style, "/exit", "Quit")
         _hr(self.style)
 
     def _cmd_last(self) -> None:
         if not self.last_run_dir:
-            _print(self.style, "warn", "[WARN] No runs yet. Use /run <topic>.")
+            _print(self.style, "warn", "[WARN] No runs yet.")
             return
         _print(self.style, "ok", f"[OK] Last run: {self.last_run_dir}")
 
@@ -196,223 +193,164 @@ class RTAShell:
         if len(args) < 2:
             _print(self.style, "err", "[ERR] Usage: /set <key> <value>")
             return
-
-        key = args[0].lower()
-        value = " ".join(args[1:]).strip()
-
+        key, value = args[0].lower(), " ".join(args[1:]).strip()
         try:
             if key in ("max_papers", "min_year", "max_year", "cache_ttl_hours"):
                 setattr(self.cfg, key, int(value))
-                _print(self.style, "ok", f"[OK] Set {key} = {value}")
-                return
-
-            if key == "retrieval_mode":
-                v = value.lower()
-                if v not in ("mock", "live"):
-                    raise ValueError("retrieval_mode must be: mock|live")
-                setattr(self.cfg, key, v)
-                _print(self.style, "ok", f"[OK] Set {key} = {v}")
-                return
-
-            if key == "sources":
-                v = value.lower()
-                if v not in ("both", "arxiv", "s2"):
-                    raise ValueError("sources must be: both|arxiv|s2")
-                self.sources = v
-                _print(self.style, "ok", f"[OK] Set sources = {v}")
-                return
-
-            raise ValueError(f"Unknown key: {key}")
-
+            elif key == "retrieval_mode":
+                if value.lower() not in ("mock", "live"): raise ValueError("mock|live")
+                setattr(self.cfg, key, value.lower())
+            elif key == "sources":
+                if value.lower() not in ("both", "arxiv", "s2"): raise ValueError("both|arxiv|s2")
+                self.sources = value.lower()
+            else:
+                raise ValueError(f"Unknown key: {key}")
+            _print(self.style, "ok", f"[OK] Set {key} = {value}")
         except Exception as e:
             _print(self.style, "err", f"[ERR] {e}")
 
     def _cmd_show(self, args) -> None:
         if not args:
-            _print(self.style, "err", "[ERR] Usage: /show config|plan|retrieval|status|reasoning")
+            _print(self.style, "err", "[ERR] Usage: /show <what>")
             return
-
         what = args[0].lower()
-
         if what == "config":
-            cfg_obj = self.cfg.model_dump()
-            cfg_obj["sources"] = self.sources
-            print(json.dumps(cfg_obj, ensure_ascii=False, indent=2))
+            print(json.dumps(self.cfg.model_dump(), indent=2))
             return
-
         if not self.last_run_dir:
-            _print(self.style, "warn", "[WARN] No runs yet. Use /run <topic>.")
+            _print(self.style, "warn", "[WARN] No runs yet.")
             return
-
-        mapping = {
-            "plan": "plan.json",           
-            "retrieval": "retrieval.json",
-            "status": "structuring.json",  
-            "reasoning": "reasoning.json",
-        }
+        mapping = {"plan": "plan.json", "retrieval": "retrieval.json", "status": "structuring.json", "reasoning": "reasoning.json"}
         fname = mapping.get(what)
-        if not fname:
-            _print(self.style, "err", "[ERR] Usage: /show config|plan|retrieval|status|reasoning")
-            return
-
+        if not fname: return
         p = self.last_run_dir / fname
-        if not p.exists():
-            _print(self.style, "warn", f"[WARN] File not found: {p}")
-            return
-
-        txt = p.read_text(encoding="utf-8", errors="replace")
-        if len(txt) > 6000:
-            txt = txt[:6000] + "\n...\n"
-        print(txt)
+        if p.exists():
+            print(p.read_text(encoding="utf-8", errors="replace")[:6000])
 
     def _cmd_open(self, args) -> None:
-        if not args:
-            _print(self.style, "err", "[ERR] Usage: /open report|plan|retrieval|status|reasoning")
-            return
-
+        if not args: return
         what = args[0].lower()
-
-        if not self.last_run_dir:
-            _print(self.style, "warn", "[WARN] No runs yet. Use /run <topic>.")
-            return
-
-        mapping = {
-            "report": "report.md",         
-            "plan": "plan.json",           
-            "retrieval": "retrieval.json",
-            "status": "structuring.json",  
-            "reasoning": "reasoning.json",
-        }
+        mapping = {"report": "report.md", "plan": "plan.json", "retrieval": "retrieval.json", "status": "structuring.json", "reasoning": "reasoning.json"}
         fname = mapping.get(what)
-        if not fname:
-            _print(self.style, "err", "[ERR] Usage: /open report|plan|retrieval|status|reasoning")
-            return
-
+        if not fname or not self.last_run_dir: return
         p = self.last_run_dir / fname
-        if not p.exists():
-            _print(self.style, "warn", f"[WARN] File not found: {p}")
-            return
-
-        txt = p.read_text(encoding="utf-8", errors="replace")
-        pydoc.pager(txt)
+        if p.exists():
+            pydoc.pager(p.read_text(encoding="utf-8", errors="replace"))
 
     # --------------------------------------------------------------------------
-    # NEW: Chat Mode Method with Citations
+    # CHAT MODE (Context-Isolated & Multi-Turn)
     # --------------------------------------------------------------------------
     def _enter_chat_mode(self, topic: str, run_dir: str):
-        """Interactive chat session with citation support."""
+        """Interactive chat with citation support and strict context isolation."""
         from rich.console import Console
         from rich.rule import Rule
-        
-        # Use local import to avoid circular dependency
         try:
             from rta.utils.llm_client import get_default_client
         except ImportError:
-            _print(self.style, "err", "[Chat] Failed to import LLM client.")
             return
 
         console = Console()
         client = get_default_client()
         run_path = Path(run_dir)
-        
-        # 1. Load Retrieved Papers for Context
+
+        # 1. Load Retrieved Papers for THIS session only
         papers_context = ""
         paper_map: Dict[str, str] = {}
         retrieval_file = run_path / "retrieval.json"
         
+        paper_count = 0
         if retrieval_file.exists():
             try:
                 data = json.loads(retrieval_file.read_text(encoding="utf-8"))
-                # Handle cases where data is a list (from mock) or dict
-                if isinstance(data, list):
-                    papers = data
-                else:
-                    papers = data.get('papers', [])
+                if isinstance(data, list): papers = data
+                else: papers = data.get('papers', [])
                 
                 context_lines = []
                 for idx, p in enumerate(papers, 1):
-                    # Robust access to fields
                     title = p.get('title', 'Unknown Title')
-                    # Author handling
                     authors = p.get('authors', [])
-                    if isinstance(authors, list) and authors:
-                        first_author = authors[0]
-                    elif isinstance(authors, str):
-                        first_author = authors
-                    else:
-                        first_author = "Unknown"
-                    
+                    first_author = authors[0] if isinstance(authors, list) and authors else "Unknown"
                     year = p.get('year', 'n.d.')
                     
-                    # Store lookup: [1] -> Title (Author, Year)
                     citation_key = f"[{idx}]"
                     citation_text = f"{title} ({first_author}, {year})"
-                    
                     paper_map[citation_key] = citation_text
                     context_lines.append(f"{citation_key} {citation_text}")
                 
                 papers_context = "\n".join(context_lines)
+                paper_count = len(papers)
             except Exception:
                 papers_context = "(Failed to load papers)"
 
-        console.print("\n[bold green]RTA is ready to discuss findings with citations.[/bold green]")
-        console.print(f"[dim]Based on: {topic} and retrieved papers.[/dim]")
-        console.print("[dim]Type 'exit' or 'quit' to end the chat.[/dim]\n")
-        
-        # 2. System Prompt with Citation Instructions
-        system_context = (
-            f"You are a helpful research assistant. You have just finished analyzing the topic '{topic}'.\n"
-            f"You have access to the following retrieved papers:\n"
+        console.print(f"\n[bold green]RTA Chat Mode: '{topic}'[/bold green]")
+        console.print(f"[dim]Loaded {paper_count} papers from this run only.[/dim]")
+        console.print("[dim]Type 'exit' to quit. Type '/reset' to clear chat history.[/dim]\n")
+
+        # 2. System Prompt (REMOVED specific examples like LVEF to prevent hallucination)
+        system_prompt_base = (
+            f"You are a research assistant expert in '{topic}'.\n"
+            f"You have access to the following retrieved papers found in THIS specific session:\n"
             f"--------------------------------------------------\n"
             f"{papers_context}\n"
             f"--------------------------------------------------\n"
-            f"Your goal is to help the user Brainstorm and Extend the research.\n"
-            f"Rules:\n"
+            f"RULES:\n"
             f"1. Answer strictly in English.\n"
-            f"2. Be concise but insightful.\n"
-            f"3. Proactively suggest applications (e.g., if relevant, mention LVEF, clinical integration, etc.).\n"
-            f"4. CITATION RULE: When your statement is supported by a paper in the list, YOU MUST cite it using [ID].\n"
-            f"   Example: 'Deep learning improves accuracy [3], especially in noisy images [5].'\n"
-            f"5. If no paper supports a point, use general knowledge but do not invent citations."
+            f"2. Use ONLY the provided papers and general knowledge. Do not infer from previous sessions.\n"
+            f"3. Proactively suggest relevant applications or extensions based on the papers.\n"
+            f"4. CITATION RULE: You MUST cite sources using [ID] when relevant.\n"
         )
 
-        # Chat Loop
+        # 3. Conversation History (Short-term memory for THIS session)
+        chat_history: List[str] = []
+
         while True:
             try:
-                # Using console.input is safer for rich formatting in prompts
                 user_input = console.input("\n[bold blue](You) > [/bold blue]").strip()
                 
+                # --- Chat Commands ---
                 if user_input.lower() in ['exit', 'quit']:
                     console.print("[yellow]Exiting chat mode.[/yellow]")
                     break
                 
-                if not user_input:
+                if user_input.lower() in ['/clear', '/reset']:
+                    chat_history = []
+                    console.print("[yellow]Chat history cleared. Context reset.[/yellow]")
                     continue
 
-                with console.status("[bold blue]Thinking with references...[/bold blue]", spinner="dots"):
-                    # Construct prompt
-                    prompt = (
-                        f"{system_context}\n\n"
+                if user_input.lower() == '/context':
+                    console.print(f"[dim]Current Context: {paper_count} papers loaded.[/dim]")
+                    continue
+
+                if not user_input: continue
+
+                with console.status("[bold blue]Thinking...[/bold blue]", spinner="dots"):
+                    
+                    # Build Prompt: System + History + New Input
+                    conversation_text = "\n".join(chat_history)
+                    final_prompt = (
+                        f"{system_prompt_base}\n\n"
+                        f"Conversation History:\n{conversation_text}\n\n"
                         f"User: {user_input}\n"
                         f"RTA:"
                     )
-                    # Call LLM
-                    response = client.generate_text(prompt)
-                
-                # Print response nicely
+
+                    response = client.generate_text(final_prompt)
+
                 console.print(f"\n[bold cyan](RTA)[/bold cyan]: {response}")
-                
-                # 3. Post-Process: Extract and Display Citations
-                # Find all [N] in the response
+
+                # Update History
+                chat_history.append(f"User: {user_input}")
+                chat_history.append(f"RTA: {response}")
+
+                # Display Citations
                 found_citations = sorted(list(set(re.findall(r'\[\d+\]', response))))
-                
                 if found_citations:
                     console.print(Rule(style="dim"))
                     console.print("[bold dim]References mentioned:[/bold dim]")
                     for key in found_citations:
                         if key in paper_map:
                             console.print(f"[green]{key}[/green] {paper_map[key]}")
-                
+
             except KeyboardInterrupt:
                 console.print("\n[yellow]Interrupted. Exiting chat mode.[/yellow]")
                 break
@@ -423,37 +361,18 @@ class RTAShell:
     def _cmd_run(self, topic: str) -> None:
         _hr(self.style)
         _print(self.style, "title", f"Topic: {topic}")
-        _print(self.style, "dim", f"Config: max_papers={self.cfg.max_papers}, mode={self.cfg.retrieval_mode}, sources={self.sources}")
+        _print(self.style, "dim", f"Config: {self.cfg.max_papers} papers, {self.cfg.retrieval_mode} mode")
         _hr(self.style)
-
         os.environ["RTA_SOURCES"] = self.sources
-
         try:
-            # Call the pipeline
             success, run_dir = run_pipeline(topic, output_dir=self.cfg.runs_dir)
-            
             self.last_run_dir = Path(run_dir)
-            
             if success:
-                _print(self.style, "ok", f"[OK] Saved outputs: {run_dir}")
-                _print(self.style, "dim", "Try: /show retrieval  |  /show status  |  /open report  |  /last")
-                # Automatically enter chat mode
+                _print(self.style, "ok", f"[OK] Saved: {run_dir}")
                 self._enter_chat_mode(topic, run_dir)
             else:
-                _print(self.style, "err", "[Fail] Pipeline did not complete successfully.")
-
-            _hr(self.style)
-            return
-
+                _print(self.style, "err", "[Fail] Pipeline failed.")
         except Exception as e:
-            # Even on failure, try to set last_run_dir to the latest created run
             latest = _find_latest_run_dir(self.cfg.runs_dir)
-            if latest is not None:
-                self.last_run_dir = latest
-
+            if latest: self.last_run_dir = latest
             _print(self.style, "err", f"[ERR] {e}")
-            if "GEMINI_API_KEY" in str(e):
-                _print(self.style, "hint", "Tip: create a .env file with GEMINI_API_KEY=... (recommended)\n")
-            else:
-                _print(self.style, "hint", "Tip: use /last then /open status to inspect failure.\n")
-            return
