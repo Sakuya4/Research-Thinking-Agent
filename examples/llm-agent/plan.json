@@ -1,0 +1,33 @@
+{
+  "original_topic": "llm agent",
+  "expanded_queries": [
+    "autonomous llm agents reasoning and planning",
+    "multi-agent systems coordination and communication",
+    "tool-augmented large language models and API integration",
+    "llm agent memory management and long-term retrieval",
+    "evaluation benchmarks for autonomous agentic workflows",
+    "llm agents for automated software engineering and debugging",
+    "hierarchical task decomposition in large language models",
+    "human-agent collaboration frameworks and interfaces",
+    "security vulnerabilities and safety of autonomous agents",
+    "embodied AI agents using large language model backbones",
+    "self-reflection and iterative error correction in agents",
+    "large language model agents for scientific discovery and research"
+  ],
+  "must_include": [
+    "autonomous decision-making",
+    "reasoning loops",
+    "tool use/API integration"
+  ],
+  "exclude": [
+    "standalone chatbots",
+    "basic prompt engineering",
+    "traditional reinforcement learning without LLMs"
+  ],
+  "target_subtasks": [
+    "evaluate architectural patterns like ReAct and Plan-and-Solve",
+    "assess current performance metrics and benchmarks",
+    "investigate robustness and safety protocols for agentic actions"
+  ],
+  "notes": "Focus on agents capable of multi-step task execution and environmental interaction rather than simple passive dialogue systems."
+}

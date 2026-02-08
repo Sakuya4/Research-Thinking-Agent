@@ -83,23 +83,44 @@ class TopicMiningService:
             cluster_map[label].append(papers[idx])
 
         for label_id, cluster_papers in cluster_map.items():
-            titles = "\n".join([f"- {p.title}" for p in cluster_papers])
-            prompt = f"Name this research theme based on these titles:\n{titles}\nReturn ONLY JSON: {{\"name\": \"...\", \"description\": \"...\"}}"
+            # Build rich context from all papers in this cluster
+            papers_info = []
+            for p in cluster_papers:
+                title = getattr(p, 'title', '')
+                abstract = getattr(p, 'abstract', '')[:300]  # First 300 chars
+                papers_info.append(f"Title: {title}\nAbstract: {abstract}")
+            
+            papers_context = "\n---\n".join(papers_info)
+            
+            prompt = (
+                f"Analyze this research cluster and return ONLY valid JSON:\n"
+                f"{papers_context}\n\n"
+                f"Return JSON with these fields:\n"
+                f"  - name: Cluster title (string)\n"
+                f"  - description: 2-3 sentence summary (string)\n"
+                f"  - keywords: List of 3-5 key research terms (array of strings)\n"
+                f"  - typical_methods: List of 3-5 research methods/approaches used (array of strings)\n"
+            )
             
             try:
                 res = self.llm_client.generate_text(prompt)
                 import json
                 data = json.loads(res.strip().strip('`').replace('json', ''))
             except:
-                data = {"name": f"Theme {label_id+1}", "description": "Grouped academic results."}
+                data = {
+                    "name": f"Theme {label_id+1}",
+                    "description": "Grouped academic results.",
+                    "keywords": ["research"],
+                    "typical_methods": ["analysis"]
+                }
 
             cluster_obj = TopicCluster(
                 cluster_id=f"cluster_{label_id}",
                 name=data.get("name", "Research Cluster"),
                 paper_ids=[getattr(p, 'paper_id', str(i)) for i, p in enumerate(cluster_papers)],
                 description=data.get("description", ""),
-                keywords=["Research"],
-                typical_methods=["Analysis"]
+                keywords=data.get("keywords", ["research"]),
+                typical_methods=data.get("typical_methods", ["analysis"])
             )
             final_clusters.append(cluster_obj)
         return final_clusters

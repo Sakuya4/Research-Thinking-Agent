@@ -1,0 +1,29 @@
+{
+  "main_directions": [
+    "Advanced Architectures for Intelligent Agents and Reasoning"
+  ],
+  "recommended_pipeline": [
+    "Analysis"
+  ],
+  "clusters": [
+    {
+      "cluster_id": "cluster_0",
+      "name": "Advanced Architectures for Intelligent Agents and Reasoning",
+      "description": "This research cluster investigates specialized mechanisms to enhance artificial intelligence performance, focusing on reasoning-based language models and communicative strategies in multi-agent systems. It explores how targeted architectures, such as distilled reasoning models and structured communication protocols, can outperform traditional scaling or uncoordinated learning approaches.",
+      "keywords": [
+        "Large Language Models",
+        "Multi-Agent Deep Reinforcement Learning",
+        "Reasoning Capabilities",
+        "Inter-agent Communication",
+        "Model Distillation"
+      ],
+      "typical_methods": [
+        "Benchmarking",
+        "Model Distillation",
+        "Comparative Performance Analysis",
+        "Communication Protocol Design",
+        "Systematic Literature Survey"
+      ]
+    }
+  ]
+}

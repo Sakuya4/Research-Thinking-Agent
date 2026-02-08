@@ -1,0 +1,138 @@
+{
+  "papers": [
+    {
+      "paper_id": "2505.03786v1",
+      "title": "When Reasoning Beats Scale: A 1.5B Reasoning Model Outranks 13B LLMs as Discriminator",
+      "abstract": "Large Language Models (LLM) with reasoning capabilities offer a promising path for improving candidate evaluation in planning frameworks, but their relative performance against traditional non-reasoning models remains largely underexplored. In this study, we benchmark a distilled 1.5B parameter reasoning model (DeepSeek-R1) against several state-of-the-art non-reasoning LLMs within a generator-discriminator LLM planning framework for the text-to-SQL task. For this, we introduce a novel method for extracting soft scores from the chain-of-thought (CoT) outputs from reasoning that enables fine-grained ranking of candidates. Our central hypothesis is that reasoning models are more effective discriminators than non-reasoning LLMs. Our results show that distilled DeepSeek-R1-1.5B achieves up to  higher F1 and  better discrimination accuracy than CodeLlama-7B, as well as  higher execution accuracy than CodeLlama-13B, despite having significantly fewer parameters. Furthermore, we find that there is a limit to the logical capabilities of reasoning models, and only providing more context or allowing more compute budget for reasoning is not enough to improve their discrimination performance. Finally, we demonstrate that, unlike non-reasoning LLMs, reasoning models find generation more challenging than discrimination and may underperform as generators compared to smaller non-reasoning LLMs. Our work highlights the potential of reasoning models as discriminators in agentic frameworks, far outweighing their capabilities as generators, offering insights into their optimal role within LLM planning infrastructures.",
+      "authors": [
+        "Md Fahim Anjum"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/pdf/2505.03786v1",
+      "source": "arxiv"
+    },
+    {
+      "paper_id": "2203.08975v2",
+      "title": "A Survey of Multi-Agent Deep Reinforcement Learning with Communication",
+      "abstract": "Communication is an effective mechanism for coordinating the behaviors of multiple agents, broadening their views of the environment, and to support their collaborations. In the field of multi-agent deep reinforcement learning (MADRL), agents can improve the overall learning performance and achieve their objectives by communication. Agents can communicate various types of messages, either to all agents or to specific agent groups, or conditioned on specific constraints. With the growing body of research work in MADRL with communication (Comm-MADRL), there is a lack of a systematic and structural approach to distinguish and classify existing Comm-MADRL approaches. In this paper, we survey recent works in the Comm-MADRL field and consider various aspects of communication that can play a role in designing and developing multi-agent reinforcement learning systems. With these aspects in mind, we propose 9 dimensions along which Comm-MADRL approaches can be analyzed, developed, and compared. By projecting existing works into the multi-dimensional space, we discover interesting trends. We also propose some novel directions for designing future Comm-MADRL systems through exploring possible combinations of the dimensions.",
+      "authors": [
+        "Changxi Zhu",
+        "Mehdi Dastani",
+        "Shihan Wang"
+      ],
+      "year": 2022,
+      "url": "https://arxiv.org/pdf/2203.08975v2",
+      "source": "arxiv"
+    },
+    {
+      "paper_id": "2404.16891v1",
+      "title": "Attacks on Third-Party APIs of Large Language Models",
+      "abstract": "Large language model (LLM) services have recently begun offering a plugin ecosystem to interact with third-party API services. This innovation enhances the capabilities of LLMs, but it also introduces risks, as these plugins developed by various third parties cannot be easily trusted. This paper proposes a new attacking framework to examine security and safety vulnerabilities within LLM platforms that incorporate third-party services. Applying our framework specifically to widely used LLMs, we identify real-world malicious attacks across various domains on third-party APIs that can imperceptibly modify LLM outputs. The paper discusses the unique challenges posed by third-party API integration and offers strategic possibilities to improve the security and safety of LLM ecosystems moving forward. Our code is released at https://github.com/vk0812/Third-Party-Attacks-on-LLMs.",
+      "authors": [
+        "Wanru Zhao",
+        "Vidit Khazanchi",
+        "Haodi Xing",
+        "Xuanli He",
+        "Qiongkai Xu",
+        "Nicholas Donald Lane"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/pdf/2404.16891v1",
+      "source": "arxiv"
+    },
+    {
+      "paper_id": "2301.00050v1",
+      "title": "Long-Term Online Multi-Session Graph-Based SPLAM with Memory Management",
+      "abstract": "For long-term simultaneous planning, localization and mapping (SPLAM), a robot should be able to continuously update its map according to the dynamic changes of the environment and the new areas explored. With limited onboard computation capabilities, a robot should also be able to limit the size of the map used for online localization and mapping. This paper addresses these challenges using a memory management mechanism, which identifies locations that should remain in a Working Memory (WM) for online processing from locations that should be transferred to a Long-Term Memory (LTM). When revisiting previously mapped areas that are in LTM, the mechanism can retrieve these locations and place them back in WM for online SPLAM. The approach is tested on a robot equipped with a short-range laser rangefinder and a RGB-D camera, patrolling autonomously 10.5 km in an indoor environment over 11 sessions while having encountered 139 people.",
+      "authors": [
+        "Mathieu Labbé",
+        "François Michaud"
+      ],
+      "year": 2022,
+      "url": "https://arxiv.org/pdf/2301.00050v1",
+      "source": "arxiv"
+    },
+    {
+      "paper_id": "2508.02866v3",
+      "title": "PROV-AGENT: Unified Provenance for Tracking AI Agent Interactions in Agentic Workflows",
+      "abstract": "Large Language Models (LLMs) and other foundation models are increasingly used as the core of AI agents. In agentic workflows, these agents plan tasks, interact with humans and peers, and influence scientific outcomes across federated and heterogeneous environments. However, agents can hallucinate or reason incorrectly, propagating errors when one agent's output becomes another's input. Thus, assuring that agents' actions are transparent, traceable, reproducible, and reliable is critical to assess hallucination risks and mitigate their workflow impacts. While provenance techniques have long supported these principles, existing methods fail to capture and relate agent-centric metadata such as prompts, responses, and decisions with the broader workflow context and downstream outcomes. In this paper, we introduce PROV-AGENT, a provenance model that extends W3C PROV and leverages the Model Context Protocol (MCP) and data observability to integrate agent interactions into end-to-end workflow provenance. Our contributions include: (1) a provenance model tailored for agentic workflows, (2) a near real-time, open-source system for capturing agentic provenance, and (3) a cross-facility evaluation spanning edge, cloud, and HPC environments, demonstrating support for critical provenance queries and agent reliability analysis.",
+      "authors": [
+        "Renan Souza",
+        "Amal Gueroudji",
+        "Stephen DeWitt",
+        "Daniel Rosendo",
+        "Tirthankar Ghosal",
+        "Robert Ross",
+        "Prasanna Balaprakash",
+        "Rafael Ferreira da Silva"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/pdf/2508.02866v3",
+      "source": "arxiv"
+    },
+    {
+      "paper_id": "2406.04710v2",
+      "title": "Morescient GAI for Software Engineering (Extended Version)",
+      "abstract": "The ability of Generative AI (GAI) technology to automatically check, synthesize and modify software engineering artifacts promises to revolutionize all aspects of software engineering. Using GAI for software engineering tasks is consequently one of the most rapidly expanding fields of software engineering research, with over a hundred LLM-based code models having been published since 2021. However, the overwhelming majority of existing code models share a major weakness - they are exclusively trained on the syntactic facet of software, significantly lowering their trustworthiness in tasks dependent on software semantics. To address this problem, a new class of \"Morescient\" GAI is needed that is \"aware\" of (i.e., trained on) both the semantic and static facets of software. This, in turn, will require a new generation of software observation platforms capable of generating large quantities of execution observations in a structured and readily analyzable way. In this paper, we present a vision and roadmap for how such \"Morescient\" GAI models can be engineered, evolved and disseminated according to the principles of open science.",
+      "authors": [
+        "Marcus Kessel",
+        "Colin Atkinson"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/pdf/2406.04710v2",
+      "source": "arxiv"
+    },
+    {
+      "paper_id": "2501.05032v2",
+      "title": "Enhancing Human-Like Responses in Large Language Models",
+      "abstract": "This paper explores the advancements in making large language models (LLMs) more human-like. We focus on techniques that enhance natural language understanding, conversational coherence, and emotional intelligence in AI systems. The study evaluates various approaches, including fine-tuning with diverse datasets, incorporating psychological principles, and designing models that better mimic human reasoning patterns. Our findings demonstrate that these enhancements not only improve user interactions but also open new possibilities for AI applications across different domains. Future work will address the ethical implications and potential biases introduced by these human-like attributes.",
+      "authors": [
+        "Ethem Yağız Çalık",
+        "Talha Rüzgar Akkuş"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/pdf/2501.05032v2",
+      "source": "arxiv"
+    },
+    {
+      "paper_id": "2505.00753v4",
+      "title": "LLM-Based Human-Agent Collaboration and Interaction Systems: A Survey",
+      "abstract": "Recent advances in large language models (LLMs) have sparked growing interest in building fully autonomous agents. However, fully autonomous LLM-based agents still face significant challenges, including limited reliability due to hallucinations, difficulty in handling complex tasks, and substantial safety and ethical risks, all of which limit their feasibility and trustworthiness in real-world applications. To overcome these limitations, LLM-based human-agent systems (LLM-HAS) incorporate human-provided information, feedback, or control into the agent system to enhance system performance, reliability and safety. These human-agent collaboration systems enable humans and LLM-based agents to collaborate effectively by leveraging their complementary strengths. This paper provides the first comprehensive and structured survey of LLM-HAS. It clarifies fundamental concepts, systematically presents core components shaping these systems, including environment & profiling, human feedback, interaction types, orchestration and communication, explores emerging applications, and discusses unique challenges and opportunities arising from human-AI collaboration. By consolidating current knowledge and offering a structured overview, we aim to foster further research and innovation in this rapidly evolving interdisciplinary field. Paper lists and resources are available at https://github.com/HenryPengZou/Awesome-Human-Agent-Collaboration-Interaction-Systems.",
+      "authors": [
+        "Henry Peng Zou",
+        "Wei-Chieh Huang",
+        "Yaozu Wu",
+        "Yankai Chen",
+        "Chunyu Miao",
+        "Hoang Nguyen",
+        "Yue Zhou",
+        "Weizhi Zhang",
+        "Liancheng Fang",
+        "Langzhou He",
+        "Yangning Li",
+        "Dongyuan Li",
+        "Renhe Jiang",
+        "Xue Liu",
+        "Philip S. Yu"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/pdf/2505.00753v4",
+      "source": "arxiv"
+    }
+  ],
+  "total_found": 8,
+  "queries_used": [
+    "autonomous llm agents reasoning and planning",
+    "multi-agent systems coordination and communication",
+    "tool-augmented large language models and API integration",
+    "llm agent memory management and long-term retrieval",
+    "evaluation benchmarks for autonomous agentic workflows",
+    "llm agents for automated software engineering and debugging",
+    "hierarchical task decomposition in large language models",
+    "human-agent collaboration frameworks and interfaces",
+    "security vulnerabilities and safety of autonomous agents",
+    "embodied AI agents using large language model backbones",
+    "self-reflection and iterative error correction in agents",
+    "large language model agents for scientific discovery and research"
+  ]
+}
