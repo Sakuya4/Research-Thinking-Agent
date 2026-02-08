@@ -135,16 +135,47 @@ def run_pipeline(topic: Union[str, Any], output_dir: Union[str, Any] = "outputs"
             _save_json(final_report, real_output_dir, "reasoning.json")
             
             # Markdown Generation
+            # If the reasoning stage fell back to an unstructured response
+            # (e.g. description == 'Recovered text'), prefer descriptions
+            # from the earlier structuring result when available.
             with open(md_path, "w", encoding="utf-8") as f:
                 f.write(f"# {report_topic}\n\n")
                 clusters = getattr(final_report, 'clusters', [])
-                for c in clusters:
+
+                # Build a mapping from structuring_result clusters for fallback
+                struct_map = {}
+                try:
+                    struct_clusters = getattr(structuring_result, 'clusters', [])
+                    for sc in struct_clusters:
+                        if isinstance(sc, dict):
+                            key = sc.get('cluster_name') or sc.get('name')
+                            struct_map[key] = sc.get('description', '')
+                        else:
+                            key = getattr(sc, 'cluster_name', getattr(sc, 'name', None))
+                            struct_map[key] = getattr(sc, 'description', '')
+                except Exception:
+                    struct_map = {}
+
+                for idx, c in enumerate(clusters):
                     if isinstance(c, dict):
-                        c_name = c.get('cluster_name', c.get('name', 'Cluster'))
+                        c_name = c.get('cluster_name', c.get('name', f'Cluster_{idx}'))
                         c_desc = c.get('description', '')
                     else:
-                        c_name = getattr(c, 'cluster_name', getattr(c, 'name', 'Cluster'))
+                        c_name = getattr(c, 'cluster_name', getattr(c, 'name', f'Cluster_{idx}'))
                         c_desc = getattr(c, 'description', '')
+
+                    # Detect fallback marker and replace if better structuring exists
+                    if (not c_desc) or (isinstance(c_desc, str) and 'Recovered' in c_desc):
+                        if c_name in struct_map and struct_map[c_name]:
+                            c_desc = struct_map[c_name]
+                        else:
+                            # Fallback: try by index matching
+                            try:
+                                sc = struct_clusters[idx]
+                                c_desc = sc.get('description', '') if isinstance(sc, dict) else getattr(sc, 'description', c_desc)
+                            except Exception:
+                                pass
+
                     f.write(f"## {c_name}\n{c_desc}\n\n")
             logger.info(f"    -> Markdown saved to: {md_path}")
 
