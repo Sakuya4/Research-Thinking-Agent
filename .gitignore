@@ -1,28 +1,59 @@
-# Python
+# --- Python Core ---
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.db
+.python-version
+
+# --- Virtual Environments ---
 .venv/
 venv/
-.env
+env/
+rta_final/
+rta_env/
 
-# IDE
+# --- IDE & Editors ---
 .vscode/
 .idea/
+*.swp
+*.swo
+.project
+.pydevproject
+.settings/
 
-# OS
-.DS_Store
+# --- Environment & Security ---
+.env
+.env.*
+! .env.example
 
-# RTA outputs
+# --- RTA specific ---
 runs/
+papers/
 
-# logs
-*.log
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+desktop.ini
 
-# python packaging artifacts
+# --- Python Packaging ---
 *.egg-info/
 dist/
 build/
-__pycache__/
-*.pyc
+egg-dist/
+
+# --- Logs & Performance ---
+*.log
+.coverage
+.cache
+.pytest_cache/
+.mypy_cache/
+
+# --- Data & Large Files ---
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.npy
+*.npz
+*.h5

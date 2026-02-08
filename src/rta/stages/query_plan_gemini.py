@@ -21,12 +21,25 @@ class QueryPlan(BaseModel):
 
 logger = logging.getLogger(__name__)
 
-_SYSTEM_PROMPT = """You are a research-scoping agent.
-Given a short topic query, you must produce a compact JSON query plan for literature search.
-Hard requirements:
-- Output MUST be valid JSON only (no markdown fences, no extra text).
-- ALL strings MUST be in English.
-- The user topic may be non-English; translate internally but output English.
+# [TODO COMPLIANCE] Enhanced Prompting with Few-shot examples to ensure structural integrity
+_SYSTEM_PROMPT = """You are a Research Scoping Agent.
+Given a topic, produce a compact JSON query plan for literature search.
+
+STRICT REQUIREMENTS:
+- Output MUST be valid JSON only.
+- NO markdown fences (```json), NO extra prose.
+- ALL content must be in English.
+- Generate exactly 12 diverse search queries.
+
+EXAMPLE OUTPUT FORMAT:
+{
+  "original_topic": "AI in ECG",
+  "expanded_queries": ["deep learning for arrhythmia detection", "wearable ECG signal processing", "transformer models for cardiovascular health", "... (total 12)"],
+  "must_include": ["clinical validation", "signal-to-noise ratio"],
+  "exclude": ["pediatric cases"],
+  "target_subtasks": ["analyze hardware constraints", "compare transformer vs CNN"],
+  "notes": "Focus on adult real-time monitoring."
+}
 """
 
 _SCHEMA_HINT = """{
@@ -38,9 +51,7 @@ _SCHEMA_HINT = """{
 }"""
 
 def _extract_json_block(text: str) -> str:
-    """
-    Extracts the JSON object from raw LLM text output.
-    """
+    """Extracts the JSON object from raw LLM text output."""
     t = text.strip()
     if t.startswith("```"):
         t = re.sub(r"^```(?:json)?\s*", "", t, flags=re.IGNORECASE)
@@ -52,44 +63,44 @@ def _extract_json_block(text: str) -> str:
     return t
 
 def _repair_json_via_llm(client: Any, broken_json: str) -> str:
-    """
-    Attempts to fix malformed JSON using a secondary LLM request.
-    """
+    """Attempts to fix malformed JSON using a secondary LLM request."""
     logger.info("[QueryPlan] Attempting to repair broken JSON via LLM...")
     prompt = f"Fix this broken JSON. Return ONLY valid JSON:\n{broken_json}\nSchema Hint:\n{_SCHEMA_HINT}"
     try:
+        # Using generate_text for the repair to avoid recursive structured calls
         return client.generate_text(prompt)
     except Exception:
         return broken_json
 
 def run_query_planning(topic: str) -> QueryPlan:
-    """
-    Main entry point for Stage 1. Executes full planning logic as per research paper.
-    """
-    # Import locally to avoid potential top-level circular dependencies
     from rta.utils.llm_client import get_default_client
     client = get_default_client()
     
     full_prompt = (
-        f"{_SYSTEM_PROMPT}\n\nTopic: {topic}\n\n"
-        f"Requirements:\n"
-        f"- expanded_queries: 12 specific search terms\n"
-        f"Return ONLY JSON.\n\n"
-        f"Format:\n{_SCHEMA_HINT}"
+        f"{_SYSTEM_PROMPT}\n\n"
+        f"Topic: {topic}\n\n"
+        f"Return ONLY JSON matching the schema hint."
     )
 
-    logger.info(f"[QueryPlan] Generating full research plan for: {topic}")
+    logger.info(f"[QueryPlan] Generating plan for: {topic}")
 
+    raw_text = "" 
     try:
         raw_text = client.generate_text(full_prompt)
         candidate = _extract_json_block(raw_text)
         obj = json.loads(candidate)
     except Exception as e:
-        logger.warning(f"[QueryPlan] Parsing failed: {e}. Initiating repair.")
-        repaired = _repair_json_via_llm(client, raw_text)
-        obj = json.loads(_extract_json_block(repaired))
-
-    if "original_topic" not in obj:
-        obj["original_topic"] = topic
+        logger.warning(f"[QueryPlan] API Error or Parsing failed: {e}")
+        if raw_text:
+            logger.info("[QueryPlan] Attempting repair...")
+            repaired = _repair_json_via_llm(client, raw_text)
+            obj = json.loads(_extract_json_block(repaired))
+        else:
+            logger.error("[QueryPlan] Could not get any text from LLM. Using emergency fallback.")
+            obj = {
+                "original_topic": topic,
+                "expanded_queries": [topic, f"{topic} review", f"{topic} technology"],
+                "notes": "Emergency recovery active."
+            }
         
     return QueryPlan.model_validate(obj)
