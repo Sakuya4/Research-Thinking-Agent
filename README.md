@@ -30,6 +30,43 @@ Instead of returning a list of papers, the agent focuses on **helping users thin
 
 ---
 
+## Demo
+```bash
+examples/llm-agent/
+├─ plan.json
+├─ retrieval.json
+├─ structuring.json
+└─ report.md
+```
+
+**Input**
+```bash
+rta "llm agent"
+```
+**Output artifacts**
+
+A single run writes all outputs to runs/<run_id>/:
+
+- plan.json — query expansion, constraints, subtasks
+
+- retrieval.json — retrieved paper metadata (title/abstract/authors/year/url)
+
+- structuring.json — topic clusters (name/description/keywords/methods)
+
+- report.md — human-readable summary report
+
+You can view a committed example run here:
+
+- examples/llm-agent/plan.json
+
+- examples/llm-agent/retrieval.json
+
+- examples/llm-agent/structuring.json
+
+- examples/llm-agent/report.md
+
+---
+
 ## How We Built It
 
 The system is implemented as a **command-line AI agent** using the Google Gemini API.
